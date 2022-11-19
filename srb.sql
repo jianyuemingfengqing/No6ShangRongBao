@@ -1,0 +1,1 @@
+CREATE DATABASE srb_core CHARSET utf8mb4;
