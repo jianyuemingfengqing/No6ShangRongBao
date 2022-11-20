@@ -15,7 +15,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableSwagger2
 public class Swagger2Config {
 
-/*    @Bean
+    @Bean
     public Docket adminApiConfig(){
 
         return new Docket(DocumentationType.SWAGGER_2)
@@ -25,11 +25,9 @@ public class Swagger2Config {
                 //只显示admin路径下的页面
                 .paths(Predicates.and(PathSelectors.regex("/admin/.*")))
                 .build();
-
     }
 
     private ApiInfo adminApiInfo(){
-
         return new ApiInfoBuilder()
                 .title("尚融宝后台管理系统-API文档")
                 .description("本文档描述了尚融宝后台管理系统接口")
@@ -39,7 +37,6 @@ public class Swagger2Config {
     }
     @Bean
     public Docket webApiConfig(){
-
         return new Docket(DocumentationType.SWAGGER_2)
                 .groupName("webApi")
                 .apiInfo(webApiInfo()) //分组描述信息
@@ -55,5 +52,5 @@ public class Swagger2Config {
                 .version("1.0")
                 .contact(new Contact("Atguigu", "http://atguigu.com", "atguigu@126.com"))
                 .build();
-    }*/
+    }
 }
