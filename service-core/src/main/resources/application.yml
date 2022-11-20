@@ -12,6 +12,11 @@ spring:
     url: jdbc:mysql://192.168.144.130:3396/srb_core?serverTimezone=GMT%2B8&characterEncoding=utf-8
     username: root
     password: 123456
+  jackson:
+    time-zone: GMT+8
+    date-format: yyyy-MM-dd HH:mm:ss
+    serialization:
+      write-enums-using-to-string: true
 
 mybatis-plus: #mybatis
   configuration:
