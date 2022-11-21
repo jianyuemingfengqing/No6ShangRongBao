@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.List;
 
 import static sun.management.Agent.error;
@@ -39,11 +40,15 @@ public class IntegralGradeController {
     public R list() {
         List<IntegralGrade> integralGradeList = integralGradeService.list();
 
+        log.error("{}的级别, 当前时间{}", "debug", new Date());
+        log.info("{}级别日志, 当前时间{}", "info", new Date());
+        log.warn("{}级别日志, 当前时间{}", "warn", new Date());
+        log.error("{}级别日志, 时间{}", "error", new Date());
 /*        if (integralGradeList == null) {
             return R.error();
         }*/
-        Assert.notNull(integralGradeList,-1,"未能查询到数据");
-        return R.ok().data("items",integralGradeList);
+        Assert.notNull(integralGradeList, -1, "未能查询到数据");
+        return R.ok().data("items", integralGradeList);
 
     }
 
@@ -56,8 +61,8 @@ public class IntegralGradeController {
     /*    if (integralGradeServiceById == null) {
             return R.error();
         }*/
-        Assert.notNull(integralGradeServiceById,-1,"没有该用户");
-        return R.ok().data("item",integralGradeServiceById);
+        Assert.notNull(integralGradeServiceById, -1, "没有该用户");
+        return R.ok().data("item", integralGradeServiceById);
     }
 
     @ApiOperation(value = "id删除积分等级")
@@ -68,7 +73,7 @@ public class IntegralGradeController {
             return R.ok();
         }
         return R.error().message("删除失败");*/
-        Assert.notTrue(result,-1,"删除失败");
+        Assert.notTrue(result, -1, "删除失败");
         return R.ok();
     }
 
@@ -81,7 +86,7 @@ public class IntegralGradeController {
             return R.ok();
         }
         return R.error().message("更新失败");*/
-        Assert.notTrue(result,-1,"更新失败");
+        Assert.notTrue(result, -1, "更新失败");
         return R.ok();
     }
 
@@ -94,7 +99,7 @@ public class IntegralGradeController {
             return R.ok();
         }
         return R.error().message("新增失败");*/
-        Assert.notTrue(result,-1,"新增失败");
+        Assert.notTrue(result, -1, "新增失败");
         return R.ok();
     }
 }
