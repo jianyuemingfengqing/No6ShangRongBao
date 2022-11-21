@@ -22,3 +22,6 @@ mybatis-plus: #mybatis
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
   mapper-locations: classpath:com/learn/srb/core/mapper/xml/*.xml
+logging:
+  level:
+    root: error
