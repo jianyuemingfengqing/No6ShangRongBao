@@ -28,6 +28,7 @@ import static sun.management.Agent.error;
 @RestController
 @Slf4j
 @Api(tags = "积分等级管理模块")
+@CrossOrigin
 //@RequestMapping("/integralGrade")
 @RequestMapping("/admin/integralGrade")
 public class IntegralGradeController {
