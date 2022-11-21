@@ -17,4 +17,10 @@ public class UnifiedExceptionHandler {
         log.error(ExceptionUtils.getStackTrace(e));
         return R.error();
     }
+
+    @ExceptionHandler(value = BusinessException.class)
+    public R exception(BusinessException e){
+        log.error(ExceptionUtils.getStackTrace(e));
+        return R.error().code(e.getCode()).message(e.getMessage());
+    }
 }
