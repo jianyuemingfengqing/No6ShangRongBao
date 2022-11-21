@@ -13,7 +13,7 @@ public class Assert {
     }
 
     // 非真
-    public static void notNTrue(boolean flag, ResponseEnum responseEnum) {
+    public static void notTrue(boolean flag, ResponseEnum responseEnum) {
         if (!flag) {
             throw new BusinessException(responseEnum);
         }
@@ -27,7 +27,7 @@ public class Assert {
     }
 
     // 非真
-    public static void notNTrue(boolean flag, Integer code, String message) {
+    public static void notTrue(boolean flag, Integer code, String message) {
         if (!flag) {
             throw new BusinessException(code, message);
         }

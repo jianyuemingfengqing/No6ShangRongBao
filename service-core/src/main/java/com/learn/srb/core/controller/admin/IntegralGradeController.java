@@ -2,6 +2,7 @@ package com.learn.srb.core.controller.admin;
 
 
 import com.learn.common.result.R;
+import com.learn.common.utils.Assert;
 import com.learn.srb.core.pojo.entity.IntegralGrade;
 import com.learn.srb.core.service.IntegralGradeService;
 import io.swagger.annotations.Api;
@@ -37,13 +38,11 @@ public class IntegralGradeController {
     @ApiOperation(value = "积分等级列表")
     public R list() {
         List<IntegralGrade> integralGradeList = integralGradeService.list();
-        log.debug("{}级别日志" , "debug");
-        log.info("{}级别日志" , "info");
-        log.warn("{}级别日志" , "warn");
-        log.error("{}级别日志" , "error");
-        if (integralGradeList == null) {
+
+/*        if (integralGradeList == null) {
             return R.error();
-        }
+        }*/
+        Assert.notNull(integralGradeList,-1,"未能查询到数据");
         return R.ok().data("items",integralGradeList);
 
     }
@@ -53,9 +52,11 @@ public class IntegralGradeController {
     @GetMapping("{id}")
     public R getById(@ApiParam(value = "id值", required = true) @PathVariable("id") String id) {
         IntegralGrade integralGradeServiceById = integralGradeService.getById(id);
-        if (integralGradeServiceById == null) {
+
+    /*    if (integralGradeServiceById == null) {
             return R.error();
-        }
+        }*/
+        Assert.notNull(integralGradeServiceById,-1,"没有该用户");
         return R.ok().data("item",integralGradeServiceById);
     }
 
@@ -63,10 +64,12 @@ public class IntegralGradeController {
     @DeleteMapping("{id}")
     public R delById(@ApiParam(value = "id值", required = true) @PathVariable("id") String id) {
         boolean result = integralGradeService.removeById(id);
-        if (result) {
+ /*       if (result) {
             return R.ok();
         }
-        return R.error().message("删除失败");
+        return R.error().message("删除失败");*/
+        Assert.notTrue(result,-1,"删除失败");
+        return R.ok();
     }
 
     @ApiOperation(value = "更新积分等级", notes = "必须提供id")
@@ -74,10 +77,12 @@ public class IntegralGradeController {
     public R update(@RequestBody IntegralGrade integralGrade) {
         boolean result = integralGradeService.updateById(integralGrade);
 
-        if (result) {
+/*        if (result) {
             return R.ok();
         }
-        return R.error().message("更新失败");
+        return R.error().message("更新失败");*/
+        Assert.notTrue(result,-1,"更新失败");
+        return R.ok();
     }
 
     @ApiOperation(value = "新增积分等级")
@@ -85,10 +90,12 @@ public class IntegralGradeController {
     public R save(@RequestBody IntegralGrade integralGrade) {
         boolean result = integralGradeService.save(integralGrade);
 
-        if (result) {
+/*        if (result) {
             return R.ok();
         }
-        return R.error().message("新增失败");
+        return R.error().message("新增失败");*/
+        Assert.notTrue(result,-1,"新增失败");
+        return R.ok();
     }
 }
 
