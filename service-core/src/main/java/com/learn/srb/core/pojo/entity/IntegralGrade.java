@@ -36,7 +36,7 @@ public class IntegralGrade implements Serializable {
 
     @ApiModelProperty(value = "编号")
     @TableId(value = "id", type = IdType.ASSIGN_ID)
-    @JsonSerialize(using = ToStringSerializer.class)
+//    @JsonSerialize(using = ToStringSerializer.class)
     private Long id;
 
     @ApiModelProperty(value = "积分区间开始")
