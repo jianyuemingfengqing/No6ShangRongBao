@@ -35,7 +35,7 @@ import static sun.management.Agent.error;
 @Api(tags = "积分等级管理模块")
 @CrossOrigin
 //@RequestMapping("/integralGrade")
-@RequestMapping("/admin/integralGrade")
+@RequestMapping("/admin/core/integralGrade")
 public class IntegralGradeController {
     @Resource
     IntegralGradeService integralGradeService;
