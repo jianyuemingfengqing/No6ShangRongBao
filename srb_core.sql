@@ -485,3 +485,7 @@ CREATE TABLE `user_login_record`  (
 -- ----------------------------
 
 SET FOREIGN_KEY_CHECKS = 1;
+
+
+USE srb_core;
+UPDATE integral_grade SET is_deleted = 0 WHERE is_deleted = 1;
