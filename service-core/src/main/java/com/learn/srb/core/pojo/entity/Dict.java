@@ -1,11 +1,11 @@
 package com.learn.srb.core.pojo.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.*;
+
 import java.util.Date;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
-import com.baomidou.mybatisplus.annotation.TableField;
 import java.io.Serializable;
+
+import com.baomidou.mybatisplus.generator.config.po.TableFill;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -43,12 +43,13 @@ public class Dict implements Serializable {
     private String dictCode;
 
     @ApiModelProperty(value = "创建时间")
+    @TableField(fill = FieldFill.INSERT)
     private Date createTime;
 
     @ApiModelProperty(value = "更新时间")
     private Date updateTime;
 
-    @ApiModelProperty(value = "删除标记（0:不可用 1:可用）")
+    @ApiModelProperty(value = "删除标记（0:可用 1:不可用）")
     @TableField("is_deleted")
     @TableLogic
     private Boolean deleted;
