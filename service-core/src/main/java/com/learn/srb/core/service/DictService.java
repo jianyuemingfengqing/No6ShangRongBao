@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.sun.deploy.net.HttpResponse;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 /**
  * <p>
  * 数据字典 服务类
@@ -16,4 +18,6 @@ import org.springframework.web.multipart.MultipartFile;
 public interface DictService extends IService<Dict> {
 
     void importDicts(MultipartFile file);
+
+    List<Dict> getDictByPid(String id);
 }

@@ -54,5 +54,8 @@ public class Dict implements Serializable {
     @TableLogic
     private Boolean deleted;
 
+    @ApiModelProperty("是否有子数据(true: 有, false:没有)")
+    @TableField(exist = false)
+    private Boolean hasChildren;
 
 }

@@ -1,6 +1,7 @@
 package com.learn.srb.core.service.impl;
 
 import com.alibaba.excel.EasyExcel;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.learn.srb.core.listener.DictExcelDataListener;
 import com.learn.srb.core.pojo.dto.ExcelDictDTO;
 import com.learn.srb.core.pojo.entity.Dict;
@@ -12,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 /**
  * <p>
@@ -37,5 +39,13 @@ public class DictServiceImpl extends ServiceImpl<DictMapper, Dict> implements Di
             throw new RuntimeException(e);
         }
 
+    }
+
+    @Override
+    public List<Dict> getDictByPid(String id) {
+        List<Dict> list = this.list(
+                new LambdaQueryWrapper<Dict>().eq(Dict::getParentId, id)
+        );
+        return list;
     }
 }
