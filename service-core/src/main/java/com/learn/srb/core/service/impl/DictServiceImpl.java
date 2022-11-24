@@ -46,6 +46,12 @@ public class DictServiceImpl extends ServiceImpl<DictMapper, Dict> implements Di
         List<Dict> list = this.list(
                 new LambdaQueryWrapper<Dict>().eq(Dict::getParentId, id)
         );
+        list.forEach(dict -> {
+            int count = this.count(
+                    new LambdaQueryWrapper<Dict>().eq(Dict::getParentId, dict.getId())
+            );
+            dict.setHasChildren(count > 0);
+        });
         return list;
     }
 }
