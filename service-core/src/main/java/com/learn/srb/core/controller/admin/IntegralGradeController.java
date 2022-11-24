@@ -4,6 +4,7 @@ package com.learn.srb.core.controller.admin;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.conditions.update.LambdaUpdateChainWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.learn.common.result.R;
 import com.learn.common.utils.Assert;
 import com.learn.srb.core.mapper.IntegralGradeMapper;
@@ -84,9 +85,10 @@ public class IntegralGradeController {
         Assert.notTrue(result, -1, "删除失败");
         return R.ok().message("删除成功");
     }
+
     @ApiOperation(value = "批量删除积分等级")
     @DeleteMapping("batchDel")
-    public R batchDel( @RequestParam List<String> id) {
+    public R batchDel(@RequestParam List<String> id) {
         boolean result = integralGradeService.removeByIds(id);
 
         Assert.notTrue(result, -1, "删除失败");
@@ -126,6 +128,19 @@ public class IntegralGradeController {
         integralGradeMapper.regain();
 //        Assert.notTrue(result, -1, "更新失败");
         return R.ok();
+    }
+
+    //    分页
+    @ApiOperation(value = "分页查询积分等级")
+    @GetMapping("/page")
+    public R getIntegralGradeList(
+            @RequestParam(value = "pageNum", required = false, defaultValue = "1") Integer pageNum,
+            @RequestParam(value = "pageSize", required = false, defaultValue = "3") Integer pageSize
+    ) {
+        Page<IntegralGrade> integralGradePage = new Page<>(pageNum, pageSize);
+        Page<IntegralGrade> integralGradeList = integralGradeMapper.selectPage(integralGradePage, null);
+        return R.ok().data("items", integralGradeList);
+
     }
 }
 
