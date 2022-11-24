@@ -8,9 +8,13 @@ import com.learn.srb.core.pojo.entity.Dict;
 import com.learn.srb.core.mapper.DictMapper;
 import com.learn.srb.core.service.DictService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.Resource;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -25,6 +29,8 @@ import java.util.List;
  */
 @Service
 public class DictServiceImpl extends ServiceImpl<DictMapper, Dict> implements DictService {
+    @Resource
+    RedisTemplate redisTemplate;
 
     @Override
     public void importDicts(MultipartFile file) {
@@ -42,7 +48,15 @@ public class DictServiceImpl extends ServiceImpl<DictMapper, Dict> implements Di
     }
 
     @Override
+    @Cacheable(value = "dicts" , key = "'cache:'+{#id}") //拼接后的key为 dicts::cache:parentId的值
     public List<Dict> getDictByPid(String id) {
+        // 怎么存到 就怎么查
+/*        Object o = redisTemplate.opsForValue().get("dicts:" + id);
+        if (o != null){
+            // 如果缓存有数据, 就用缓存的
+            return (List<Dict>)o;
+        }*/
+
         List<Dict> list = this.list(
                 new LambdaQueryWrapper<Dict>().eq(Dict::getParentId, id)
         );
@@ -52,6 +66,14 @@ public class DictServiceImpl extends ServiceImpl<DictMapper, Dict> implements Di
             );
             dict.setHasChildren(count > 0);
         });
+//        redisTemplate.opsForValue().set("dicts:" + id, list);
         return list;
+    }
+
+    //DictServiceImpl
+    @CacheEvict(value = "dicts" , key = "'cache:'+{#dict.parentId}")
+    @Override
+    public void updateDict(Dict dict) {
+        this.updateById(dict);
     }
 }

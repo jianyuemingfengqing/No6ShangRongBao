@@ -92,12 +92,12 @@ public class RedisTest {
 //        redisTemplate.boundHashOps("key");  根据redis中的key获取hash结构   就可以使用类似map的方式操作它里面的数据
         BoundHashOperations hashOps = redisTemplate.boundHashOps("user:1");
 //        Set keys = hashOps.keys();
-//        hashOps.values();
-//        hashOps.entries();
-//        hashOps.put(p,val); 存入一个属性和值
-//        hashOps.get(p) 获取属性值
-//        hashOps.hasKey(p) 判断是否包含某个属性
-//        hashOps.size() entry的个数
+/*        hashOps.values();
+        hashOps.entries();
+        hashOps.put(p,val); 存入一个属性和值
+        hashOps.get(p) 获取属性值
+        hashOps.hasKey(p) 判断是否包含某个属性
+        hashOps.size() entry的个数*/
         if(hashOps.size()==0){
             System.out.println("user:1的数据还未初始化");
             hashOps.put("username","fangfang");
@@ -106,6 +106,7 @@ public class RedisTest {
             hashOps.put("id","1");
         }
         Set keys = hashOps.keys();
+
         System.out.println(keys);
         System.out.println(hashOps.values());
         hashOps.entries().forEach((k,v)->{

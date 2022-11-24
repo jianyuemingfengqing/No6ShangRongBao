@@ -105,5 +105,12 @@ public class DictController {
         return R.ok().data("items", dictByPid);
     }
 
+    //AdminDictController
+    @ApiOperation(value = "更新数据字典")
+    @PutMapping("updateDict")
+    public R updateDict(@RequestBody Dict dict){
+        dictService.updateDict(dict);
+        return R.ok();
+    }
 }
 
