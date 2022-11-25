@@ -34,6 +34,12 @@ public class SmsServiceImpl implements SmsService {
         }
 
         // 发送短信
+        //时间
+        String  timesKey = "sms:code:" + mobile + type;
+        //次数
+        String countKey = "sms:code:" + mobile + type;
+        //验证码的key
+        String  codeKey ="sms:code:" + mobile + type;
 
         try {
             String host = smsProperties.getHost();
@@ -46,7 +52,6 @@ public class SmsServiceImpl implements SmsService {
 
             headers.put("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
             Map<String, String> querys = new HashMap<String, String>();
-
             Map<String, String> bodys = new HashMap<String, String>();
 
             String fourBitRandom = RandomUtils.getFourBitRandom();
@@ -63,17 +68,17 @@ public class SmsServiceImpl implements SmsService {
             if ("OK".equals(map.get("status"))) {
                 // 短信发送成功
                 // 存储验证码
-                stringRedisTemplate.opsForValue().set("sms:code:" + mobile + type, fourBitRandom, 20, TimeUnit.MINUTES);
+                stringRedisTemplate.opsForValue().set(countKey, fourBitRandom, 20, TimeUnit.MINUTES);
                 //更新验证码发送次数
                 //2分钟内不能重复获取验证码
-                stringRedisTemplate.opsForValue().set("sms:code:"+ mobile + type, "1", 2, TimeUnit.MINUTES);
+                stringRedisTemplate.opsForValue().set(timesKey, "1", 2, TimeUnit.MINUTES);
 
-                if (stringRedisTemplate.hasKey("sms:code:" + mobile + type)){// 判断是否是重复获取
+                if (stringRedisTemplate.hasKey(countKey)){// 判断是否是重复获取
                     //如果是第N次获取 在之前的次数上+1
-                    stringRedisTemplate.opsForValue().increment("sms:code:" + mobile + type);
+                    stringRedisTemplate.opsForValue().increment(countKey);
                 } else {
                     //如果第一次获取验证码 , 之前的过期了
-                    stringRedisTemplate.opsForValue().set("sms:code:" + mobile + type, fourBitRandom, 20, TimeUnit.MINUTES);
+                    stringRedisTemplate.opsForValue().set(countKey, fourBitRandom, 20, TimeUnit.MINUTES);
                 }
 
             } else {
