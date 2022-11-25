@@ -1,5 +1,4 @@
-package com.learn.srb.core;
-
+import com.learn.common.utils.HttpUtils;
 import org.apache.http.HttpResponse;
 
 import java.util.HashMap;
@@ -38,7 +37,6 @@ public class MailTest {
             //获取response的body
             //System.out.println(EntityUtils.toString(response.getEntity()));
         } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 }
