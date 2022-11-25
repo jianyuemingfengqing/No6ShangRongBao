@@ -6,6 +6,7 @@ import com.learn.common.result.ResponseEnum;
 import com.learn.common.utils.HttpUtils;
 import com.learn.common.utils.RandomUtils;
 import com.learn.common.utils.RegexValidateUtils;
+import com.learn.srb.sms.config.SmsProperties;
 import com.learn.srb.sms.server.SmsService;
 import org.apache.http.HttpResponse;
 import org.apache.http.util.EntityUtils;
@@ -21,6 +22,8 @@ import java.util.concurrent.TimeUnit;
 public class SmsServiceImpl implements SmsService {
     @Resource
     StringRedisTemplate stringRedisTemplate;
+    @Resource
+    SmsProperties smsProperties;
 
     @Override
     public void sendMsg(String mobile, Integer type) {
@@ -33,10 +36,10 @@ public class SmsServiceImpl implements SmsService {
         // 发送短信
 
         try {
-            String host = "https://dfsns.market.alicloudapi.com";
-            String path = "/data/send_sms";
-            String method = "POST";
-            String appcode = "421a1ed5766f44739bc4b2b88096d41e";
+            String host = smsProperties.getHost();
+            String path = smsProperties.getPath();
+            String method = smsProperties.getMethod();
+            String appcode = smsProperties.getAppcode();
             Map<String, String> headers = new HashMap<String, String>();
 
             headers.put("Authorization", "APPCODE " + appcode);
@@ -49,7 +52,7 @@ public class SmsServiceImpl implements SmsService {
             String fourBitRandom = RandomUtils.getFourBitRandom();
             bodys.put("content", "code:" + fourBitRandom);
             bodys.put("phone_number", mobile);
-            bodys.put("template_id", "TPL_0000");
+            bodys.put("template_id", smsProperties.getTemplateId());
 
 
             HttpResponse response = HttpUtils.doPost(host, path, method, headers, querys, bodys);

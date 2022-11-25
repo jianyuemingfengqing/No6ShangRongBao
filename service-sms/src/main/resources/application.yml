@@ -24,9 +24,9 @@ spring:
 #阿里云短信
 aliyun:
   sms:
-    appSecret: tAGtdxJuLyGkqiJS1piMI8TJOgJ57xML
-    appCode: 421a1ed5766f44739bc4b2b88096d41e
-    host: https://dfsns.market.alicloudapi.com/data/send_sms
-    path: /data/send_sms
-    method: POST
-    templateId: TPL_0000
+    appSecret: "tAGtdxJuLyGkqiJS1piMI8TJOgJ57xML"
+    appcode: "421a1ed5766f44739bc4b2b88096d41e"
+    host: "https://dfsns.market.alicloudapi.com/data/send_sms"
+    path: "/data/send_sms"
+    method: "POST"
+    templateId: "TPL_0000"
