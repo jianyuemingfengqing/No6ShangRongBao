@@ -9,13 +9,19 @@ import com.learn.common.utils.RegexValidateUtils;
 import com.learn.srb.sms.server.SmsService;
 import org.apache.http.HttpResponse;
 import org.apache.http.util.EntityUtils;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class SmsServiceImpl implements SmsService {
+    @Resource
+    StringRedisTemplate stringRedisTemplate;
+
     @Override
     public void sendMsg(String mobile, Integer type) {
         // 验证手机号
@@ -53,13 +59,26 @@ public class SmsServiceImpl implements SmsService {
             Map map = JSON.parseObject(result, Map.class);
             if ("OK".equals(map.get("status"))) {
                 // 短信发送成功
+                // 存储验证码
+                stringRedisTemplate.opsForValue().set("sms:code:" + mobile + type, fourBitRandom, 20, TimeUnit.MINUTES);
+                //更新验证码发送次数
+                //2分钟内不能重复获取验证码
+                stringRedisTemplate.opsForValue().set("sms:code:"+ mobile + type, "1", 2, TimeUnit.MINUTES);
+
+                if (stringRedisTemplate.hasKey("sms:code:" + mobile + type)){// 判断是否是重复获取
+                    //如果是第N次获取 在之前的次数上+1
+                    stringRedisTemplate.opsForValue().increment("sms:code:" + mobile + type);
+                } else {
+                    //如果第一次获取验证码 , 之前的过期了
+                    stringRedisTemplate.opsForValue().set("sms:code:" + mobile + type, fourBitRandom, 20, TimeUnit.MINUTES);
+                }
 
             } else {
                 throw new BusinessException(ResponseEnum.ALIYUN_SMS_ERROR);
             }
 
         } catch (Exception e) {
-            throw new BusinessException(ResponseEnum.ALIYUN_SMS_ERROR,e);
+            throw new BusinessException(ResponseEnum.ALIYUN_SMS_ERROR, e);
         }
     }
 }
