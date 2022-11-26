@@ -8,6 +8,7 @@ import com.learn.common.utils.RandomUtils;
 import com.learn.common.utils.RegexValidateUtils;
 import com.learn.srb.sms.config.SmsProperties;
 import com.learn.srb.sms.server.SmsService;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.util.EntityUtils;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -41,6 +42,15 @@ public class SmsServiceImpl implements SmsService {
         //验证码的key
         String  codeKey ="sms:code:" + mobile + type;
 
+        //2.1 2分钟内不能重复获取
+        if(stringRedisTemplate.hasKey(timesKey)){
+            throw new BusinessException(ResponseEnum.ALIYUN_SMS_LIMIT_CONTROL_ERROR);
+        }
+        //2.2 一天内只能获取3条
+        String countStr = stringRedisTemplate.opsForValue().get(countKey);
+        if(StringUtils.isNotEmpty(countStr) && Integer.parseInt(countStr)>=3){
+            throw new BusinessException(ResponseEnum.ALIYUN_SMS_COUNTS_CONTROL_ERROR);
+        }
         try {
             String host = smsProperties.getHost();
             String path = smsProperties.getPath();
