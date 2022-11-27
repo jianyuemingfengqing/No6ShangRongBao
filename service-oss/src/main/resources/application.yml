@@ -1,0 +1,28 @@
+server:
+  port: 8130 # 服务端口
+
+spring:
+  profiles:
+    active: dev # 环境设置
+  application:
+    name: service-oss # 服务名
+
+  #spring:
+  redis:
+    host: 192.168.144.128
+#    host: 192.168.144.129
+    port: 6379
+  servlet:
+    multipart:
+      # 单个文件表单项文件大小
+      max-file-size: 20MB
+      # 一个表单所有的文件表单项提交文件总大小
+      max-request-size: 50MB
+
+#阿里云短信
+aliyun:
+  oss:
+    endpoint: "https://oss-cn-shanghai.aliyuncs.com"
+    accessKeyId: "LTAI5tS9v3i2kDJQ6EUFnnmL"
+    accessKeySecret: "hvY1nVT5VuUwWeyN8dO6Tobo59aYGq"
+    bucketName: "jianyueming-test"
