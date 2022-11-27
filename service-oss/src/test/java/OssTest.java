@@ -5,10 +5,12 @@ import com.aliyun.oss.OSSException;
 import com.aliyun.oss.model.BucketInfo;
 import com.aliyun.oss.model.CannedAccessControlList;
 import com.aliyun.oss.model.CreateBucketRequest;
+import org.joda.time.DateTime;
 import org.junit.jupiter.api.Test;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.util.UUID;
 
 
 public class OssTest {
@@ -31,7 +33,8 @@ public class OssTest {
     String accessKeyId = "LTAI5tS9v3i2kDJQ6EUFnnmL";
     String accessKeySecret = "hvY1nVT5VuUwWeyN8dO6Tobo59aYGq";
     OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
-    String bucketName = "jianyueming";
+    String bucketName = "jianyueming-test";
+
     @Test
     public void testCreat() {
         String endpoint = "https://oss-cn-shanghai.aliyuncs.com";
@@ -77,11 +80,15 @@ public class OssTest {
 
     @Test
     public void testUp() {
-        String objectName = "imgs/ganyu.jpeg";
-        // 填写本地文件的完整路径，例如D:\\localpath\\examplefile.txt。
-        // 如果未指定本地路径，则默认从示例程序所属项目对应本地路径中上传文件流。
-        String filePath = "J:\\img\\1.jpeg";
 
+        String filePath = "J:\\img\\1.jpeg";
+        String module = "imgs";
+
+        String objectName = module + new DateTime().toString("/yyyy/MM/dd/")//时间戳
+                + System.currentTimeMillis()
+                + "_"
+                + UUID.randomUUID().toString().substring(0, 6) //6位的uuid
+                + filePath.substring(filePath.lastIndexOf(".")); // 文件后缀
         // 创建OSSClient实例。
         OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
 
@@ -89,6 +96,8 @@ public class OssTest {
             InputStream inputStream = new FileInputStream(filePath);
             // 创建PutObject请求。
             ossClient.putObject(bucketName, objectName, inputStream);
+            String imgUrl = "http://" + bucketName + ".oss-cn-shanghai.aliyuncs.com/" + objectName;
+            System.out.println(imgUrl);
         } catch (Exception oe) {
             System.out.println(oe);
         } finally {
@@ -97,4 +106,38 @@ public class OssTest {
             }
         }
     }
+
+    @Test
+    public void testDel() {
+        // http://jianyueming-test.oss-cn-shanghai.aliyuncs.com/imgs/2022/11/27/1669556112587_1e8bb0.jpeg
+        String imgUrl = "http://jianyueming-test.oss-cn-shanghai.aliyuncs.com/imgs/2022/11/27/1669556112587_1e8bb0.jpeg";
+//        String objectName = "exampleobject.txt";
+        String objectName = imgUrl.substring(imgUrl.indexOf("http://" + bucketName + ".oss-cn-shanghai.aliyuncs.com/")
+                + ("http://" + bucketName + ".oss-cn-shanghai.aliyuncs.com/").length());
+
+        // 创建OSSClient实例。
+        OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
+
+        try {
+            // 删除文件或目录。如果要删除目录，目录必须为空。
+            ossClient.deleteObject(bucketName, objectName);
+        } catch (OSSException oe) {
+            System.out.println("Caught an OSSException, which means your request made it to OSS, "
+                    + "but was rejected with an error response for some reason.");
+            System.out.println("Error Message:" + oe.getErrorMessage());
+            System.out.println("Error Code:" + oe.getErrorCode());
+            System.out.println("Request ID:" + oe.getRequestId());
+            System.out.println("Host ID:" + oe.getHostId());
+        } catch (ClientException ce) {
+            System.out.println("Caught an ClientException, which means the client encountered "
+                    + "a serious internal problem while trying to communicate with OSS, "
+                    + "such as not being able to access the network.");
+            System.out.println("Error Message:" + ce.getMessage());
+        } finally {
+            if (ossClient != null) {
+                ossClient.shutdown();
+            }
+        }
+    }
+
 }
