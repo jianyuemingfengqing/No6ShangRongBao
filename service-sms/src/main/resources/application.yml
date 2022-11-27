@@ -9,7 +9,8 @@ spring:
 
   #spring:
   redis:
-    host: 192.168.144.130
+    host: 192.168.144.128
+#    host: 192.168.144.129
     port: 6379
     database: 0
 #    password:  #默认为空
@@ -24,9 +25,9 @@ spring:
 #阿里云短信
 aliyun:
   sms:
-    appSecret: "tAGtdxJuLyGkqiJS1piMI8TJOgJ57xML"
+#    appSecret: "tAGtdxJuLyGkqiJS1piMI8TJOgJ57xML"
     appcode: "421a1ed5766f44739bc4b2b88096d41e"
-    host: "https://dfsns.market.alicloudapi.com/data/send_sms"
+    host: "https://dfsns.market.alicloudapi.com"
     path: "/data/send_sms"
     method: "POST"
     templateId: "TPL_0000"

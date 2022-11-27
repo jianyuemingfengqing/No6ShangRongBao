@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -36,19 +37,19 @@ public class SmsServiceImpl implements SmsService {
 
         // 发送短信
         //时间
-        String  timesKey = "sms:code:" + mobile + type;
+        String timesKey = "sms:time:" + mobile + ":" + type;
         //次数
-        String countKey = "sms:code:" + mobile + type;
+        String countKey = "sms:count:" + mobile + ":" + type;
         //验证码的key
-        String  codeKey ="sms:code:" + mobile + type;
+        String codeKey = "sms:code:" + mobile + ":" + type;
 
         //2.1 2分钟内不能重复获取
-        if(stringRedisTemplate.hasKey(timesKey)){
+        if (Boolean.TRUE.equals(stringRedisTemplate.hasKey(timesKey))) {
             throw new BusinessException(ResponseEnum.ALIYUN_SMS_LIMIT_CONTROL_ERROR);
         }
         //2.2 一天内只能获取3条
         String countStr = stringRedisTemplate.opsForValue().get(countKey);
-        if(StringUtils.isNotEmpty(countStr) && Integer.parseInt(countStr)>=3){
+        if (StringUtils.isNotEmpty(countStr) && Integer.parseInt(countStr) >= 3) {
             throw new BusinessException(ResponseEnum.ALIYUN_SMS_COUNTS_CONTROL_ERROR);
         }
         try {
@@ -74,7 +75,9 @@ public class SmsServiceImpl implements SmsService {
 //            System.out.println(response.toString());
             // 接受响应的数据
             String result = EntityUtils.toString(response.getEntity(), "UTF-8");
+//            List<Map> list = JSON.parseArray(result, Map.class);
             Map map = JSON.parseObject(result, Map.class);
+//            Map map = list.get(0);
             if ("OK".equals(map.get("status"))) {
                 // 短信发送成功
                 // 存储验证码
@@ -83,7 +86,7 @@ public class SmsServiceImpl implements SmsService {
                 //2分钟内不能重复获取验证码
                 stringRedisTemplate.opsForValue().set(timesKey, "1", 2, TimeUnit.MINUTES);
 
-                if (stringRedisTemplate.hasKey(countKey)){// 判断是否是重复获取
+                if (Boolean.TRUE.equals(stringRedisTemplate.hasKey(countKey))) {// 判断是否是重复获取
                     //如果是第N次获取 在之前的次数上+1
                     stringRedisTemplate.opsForValue().increment(countKey);
                 } else {
