@@ -6,6 +6,7 @@ import com.learn.common.result.ResponseEnum;
 import com.learn.common.utils.HttpUtils;
 import com.learn.common.utils.RandomUtils;
 import com.learn.common.utils.RegexValidateUtils;
+import com.learn.srb.base.config.constants.SrbCons;
 import com.learn.srb.sms.config.SmsProperties;
 import com.learn.srb.sms.server.SmsService;
 import org.apache.commons.lang3.StringUtils;
@@ -37,11 +38,11 @@ public class SmsServiceImpl implements SmsService {
 
         // 发送短信
         //时间
-        String timesKey = "sms:time:" + mobile + ":" + type;
+        String timesKey =  SrbCons.SMS_TIMES_PREFIX + mobile + ":" + type;
         //次数
-        String countKey = "sms:count:" + mobile + ":" + type;
+        String countKey = SrbCons.SMS_COUNT_PREFIX  + mobile + ":" + type;
         //验证码的key
-        String codeKey = "sms:code:" + mobile + ":" + type;
+        String codeKey = SrbCons.SMS_CODE_PREFIX + mobile + ":" + type;
 
         //2.1 2分钟内不能重复获取
         if (Boolean.TRUE.equals(stringRedisTemplate.hasKey(timesKey))) {
@@ -53,10 +54,10 @@ public class SmsServiceImpl implements SmsService {
             throw new BusinessException(ResponseEnum.ALIYUN_SMS_COUNTS_CONTROL_ERROR);
         }
         try {
-            String host = smsProperties.getHost();
-            String path = smsProperties.getPath();
-            String method = smsProperties.getMethod();
-            String appcode = smsProperties.getAppcode();
+            String host = smsProperties.HOST;
+            String path = smsProperties.PATH;
+            String method = smsProperties.METHOD;
+            String appcode = smsProperties.APPCODE;
             Map<String, String> headers = new HashMap<String, String>();
 
             headers.put("Authorization", "APPCODE " + appcode);
@@ -68,7 +69,7 @@ public class SmsServiceImpl implements SmsService {
             String fourBitRandom = RandomUtils.getFourBitRandom();
             bodys.put("content", "code:" + fourBitRandom);
             bodys.put("phone_number", mobile);
-            bodys.put("template_id", smsProperties.getTemplateId());
+            bodys.put("template_id", smsProperties.TEMPLATE_ID);
 
 
             HttpResponse response = HttpUtils.doPost(host, path, method, headers, querys, bodys);
