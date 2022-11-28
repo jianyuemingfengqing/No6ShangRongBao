@@ -39,4 +39,10 @@ public class Assert {
             throw new BusinessException(codeNullError);
         }
     }
+
+    public static void strNotEq(String code, String redisCode, ResponseEnum codeError) {
+        if (code == null ||redisCode == null|| !code.equals(redisCode)) {
+            throw new BusinessException(codeError);
+        }
+    }
 }

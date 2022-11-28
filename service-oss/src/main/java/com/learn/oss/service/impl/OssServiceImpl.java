@@ -24,7 +24,7 @@ public class OssServiceImpl implements OssService {
     @Override
     public String upload(MultipartFile file, String module) {
 //        String filePath = "J:\\img\\1.jpeg";
-//        String module = "imgs";
+//        String module = "imgs";// 所在桶的文件夹
 
         String filePath = "J:\\img\\" + file.getOriginalFilename(); // 获取文件名
 
