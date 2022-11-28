@@ -9,8 +9,7 @@ spring:
 
   #spring:
   redis:
-    host: 192.168.144.128
-#    host: 192.168.144.129
+    host: 192.168.176.128
     port: 6379
   servlet:
     multipart:

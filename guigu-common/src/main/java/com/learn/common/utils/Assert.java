@@ -7,6 +7,7 @@ public class Assert {
     // 自定义断言
 //非空
     public static void notNull(Object object, ResponseEnum responseEnum) {
+
         if (object == null) {
             throw new BusinessException(responseEnum);
         }
@@ -30,6 +31,12 @@ public class Assert {
     public static void notTrue(boolean flag, Integer code, String message) {
         if (!flag) {
             throw new BusinessException(code, message);
+        }
+    }
+
+    public static void strNotNull(String string, ResponseEnum codeNullError) {
+        if (string == null || string.trim().length() == 0) {
+            throw new BusinessException(codeNullError);
         }
     }
 }

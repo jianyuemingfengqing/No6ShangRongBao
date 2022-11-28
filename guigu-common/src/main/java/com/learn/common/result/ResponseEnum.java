@@ -50,7 +50,8 @@ public enum ResponseEnum {
     WEIXIN_CALLBACK_PARAM_ERROR(-601, "回调参数不正确"),
     WEIXIN_FETCH_ACCESSTOKEN_ERROR(-602, "获取access_token失败"),
     WEIXIN_FETCH_USERINFO_ERROR(-603, "获取用户信息失败"),
-    OSS_DELETE_ERROR(-104, "文件删除错误"),;
+    OSS_DELETE_ERROR(-104, "文件删除错误"),
+    USER_TYPE_NULL_ERROR(-3, "用户类型不能为空");
 
     // 响应状态码
     private Integer code;

@@ -9,7 +9,6 @@ import com.learn.common.result.ResponseEnum;
 import com.learn.common.utils.Assert;
 import com.learn.srb.core.pojo.dto.ExcelDictDTO;
 import com.learn.srb.core.pojo.entity.Dict;
-import com.learn.srb.core.pojo.entity.IntegralGrade;
 import com.learn.srb.core.service.DictService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -20,8 +19,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,7 +34,7 @@ import java.util.stream.Collectors;
 @CrossOrigin
 @RestController
 @RequestMapping("/admin/core/dict")
-public class DictController {
+public class AdminDictController {
     @Resource
     DictService dictService;
 
