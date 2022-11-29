@@ -10,7 +10,6 @@ spring:
   #spring:
   redis:
     host: 192.168.176.128
-#    host: 192.168.144.129
     port: 6379
     database: 0
 #    password:  #默认为空

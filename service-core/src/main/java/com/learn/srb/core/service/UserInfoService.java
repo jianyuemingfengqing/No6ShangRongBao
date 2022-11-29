@@ -15,4 +15,6 @@ import com.learn.srb.core.pojo.vo.UserRegisterVO;
 public interface UserInfoService extends IService<UserInfo> {
 
     void register(UserRegisterVO userRegisterVO);
+
+    String login(UserInfo userInfo);
 }

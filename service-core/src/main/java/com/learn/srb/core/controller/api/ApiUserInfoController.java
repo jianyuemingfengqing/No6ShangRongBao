@@ -37,5 +37,12 @@ public class ApiUserInfoController {
         userInfoService.register(userRegisterVO);
         return R.ok().message("注册成功");
     }
+    @ApiOperation(value = "登录")
+    @PostMapping("login")
+    public R login(@RequestBody UserInfo userInfo) {
+
+        String token = userInfoService.login(userInfo);
+        return R.ok().data("token",token);
+    }
 }
 
