@@ -41,7 +41,7 @@ public class Assert {
     }
 
     public static void strNotEq(String code, String redisCode, ResponseEnum codeError) {
-        if (code == null ||redisCode == null|| !code.equals(redisCode)) {
+        if (code == null || redisCode == null || !code.equals(redisCode)) {
             throw new BusinessException(codeError);
         }
     }

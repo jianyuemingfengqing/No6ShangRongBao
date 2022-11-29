@@ -9,7 +9,7 @@ import java.io.Serializable;
 
 @Data
 @ApiModel(value="注册使用", description="用户基本信息")
-public class UserRegisterVO {
+public class UserRegisterVO implements Serializable{
 
     @ApiModelProperty(value = "1：出借人 2：借款人")
     private Integer userType;
@@ -22,9 +22,5 @@ public class UserRegisterVO {
 
     @ApiModelProperty(value = "验证码")
     private String code;
-
-
-
-
 
 }

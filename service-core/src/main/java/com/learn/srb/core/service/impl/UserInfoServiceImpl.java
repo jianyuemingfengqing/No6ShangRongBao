@@ -5,7 +5,7 @@ import com.learn.common.exception.BusinessException;
 import com.learn.common.result.ResponseEnum;
 import com.learn.common.utils.Assert;
 import com.learn.common.utils.MD5;
-import com.learn.srb.base.config.constants.SrbCons;
+import com.learn.srb.base.config.constants.SrbConsts;
 import com.learn.srb.base.config.utils.JwtUtils;
 import com.learn.srb.core.pojo.entity.UserInfo;
 import com.learn.srb.core.mapper.UserInfoMapper;
@@ -33,19 +33,18 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
 
     @Override
     public void register(UserRegisterVO userRegisterVO) {
-        //1、获取参数
+        //1、验证参数
         String code = userRegisterVO.getCode();
         String mobile = userRegisterVO.getMobile();
         String password = userRegisterVO.getPassword();
         Integer userType = userRegisterVO.getUserType();
-        // 校验非空
         Assert.strNotNull(code, ResponseEnum.CODE_NULL_ERROR);
         Assert.strNotNull(mobile, ResponseEnum.MOBILE_NULL_ERROR);
         Assert.strNotNull(password, ResponseEnum.PASSWORD_NULL_ERROR);
         Assert.notNull(userType, ResponseEnum.USER_TYPE_NULL_ERROR);
-
         //2、验证验证码
-        String codeKey = SrbCons.SMS_CODE_PREFIX + mobile + ":" + 0;
+        String codeKey = SrbConsts.SMS_CODE_PREFIX + mobile + ":" + 0;
+        stringRedisTemplate.opsForValue().set(codeKey,code);
         String redisCode = stringRedisTemplate.opsForValue().get(codeKey);
         Assert.strNotEq(code, redisCode, ResponseEnum.CODE_ERROR);
 
@@ -99,7 +98,7 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         String salt = user.getSalt();
         //对登录密码加密
         String encrypt = MD5.encrypt(MD5.encrypt(password) + salt);
-        Assert.strNotEq(encrypt ,encodedPwd , ResponseEnum.LOGIN_PASSWORD_ERROR);
+        Assert.strNotEq(encrypt, encodedPwd, ResponseEnum.LOGIN_PASSWORD_ERROR);
 
         //3、登录成功：构建jwt字符串返回
         String token = JwtUtils.createToken(user.getId(), user.getNickName());

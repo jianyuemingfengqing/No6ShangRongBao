@@ -7,11 +7,7 @@ import com.learn.srb.core.pojo.vo.UserRegisterVO;
 import com.learn.srb.core.service.UserInfoService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
@@ -24,7 +20,8 @@ import javax.annotation.Resource;
  * @since 2022-11-19
  */
 @RestController
-@RequestMapping("api/core/userInfo")
+@RequestMapping("/api/core/userInfo")
+@CrossOrigin
 @Api(tags = "用户信息模块")
 public class ApiUserInfoController {
     @Resource

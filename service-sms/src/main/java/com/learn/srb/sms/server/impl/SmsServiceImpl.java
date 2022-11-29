@@ -6,7 +6,7 @@ import com.learn.common.result.ResponseEnum;
 import com.learn.common.utils.HttpUtils;
 import com.learn.common.utils.RandomUtils;
 import com.learn.common.utils.RegexValidateUtils;
-import com.learn.srb.base.config.constants.SrbCons;
+import com.learn.srb.base.config.constants.SrbConsts;
 import com.learn.srb.sms.config.SmsProperties;
 import com.learn.srb.sms.server.SmsService;
 import org.apache.commons.lang3.StringUtils;
@@ -37,11 +37,11 @@ public class SmsServiceImpl implements SmsService {
 
         // 发送短信
         //时间
-        String timesKey =  SrbCons.SMS_TIMES_PREFIX + mobile + ":" + type;
+        String timesKey =  SrbConsts.SMS_TIMES_PREFIX + mobile + ":" + type;
         //次数
-        String countKey = SrbCons.SMS_COUNT_PREFIX  + mobile + ":" + type;
+        String countKey = SrbConsts.SMS_COUNT_PREFIX  + mobile + ":" + type;
         //验证码的key
-        String codeKey = SrbCons.SMS_CODE_PREFIX + mobile + ":" + type;
+        String codeKey = SrbConsts.SMS_CODE_PREFIX + mobile + ":" + type;
 
         //2.1 2分钟内不能重复获取
         if (Boolean.TRUE.equals(stringRedisTemplate.hasKey(timesKey))) {
@@ -52,6 +52,7 @@ public class SmsServiceImpl implements SmsService {
         if (StringUtils.isNotEmpty(countStr) && Integer.parseInt(countStr) >= 3) {
             throw new BusinessException(ResponseEnum.ALIYUN_SMS_COUNTS_CONTROL_ERROR);
         }
+
         try {
             String host = smsProperties.HOST;
             String path = smsProperties.PATH;
@@ -60,25 +61,24 @@ public class SmsServiceImpl implements SmsService {
             Map<String, String> headers = new HashMap<String, String>();
 
             headers.put("Authorization", "APPCODE " + appcode);
-
             headers.put("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
             Map<String, String> querys = new HashMap<String, String>();
             Map<String, String> bodys = new HashMap<String, String>();
 
             String fourBitRandom = RandomUtils.getFourBitRandom();
-            bodys.put("content", "code:" + fourBitRandom);
-            bodys.put("phone_number", mobile);
-            bodys.put("template_id", smsProperties.TEMPLATE_ID);
+            querys.put("content", "code:" + fourBitRandom);
+            querys.put("phone_number", mobile);
+            querys.put("template_id", smsProperties.TEMPLATE_ID);
 
 
-            HttpResponse response = HttpUtils.doPost(host, path, method, headers, querys, bodys);
+//            HttpResponse response = HttpUtils.doPost(host, path, method, headers, querys, bodys);
 //            System.out.println(response.toString());
             // 接受响应的数据
-            String result = EntityUtils.toString(response.getEntity(), "UTF-8");
+//            String result = EntityUtils.toString(response.getEntity(), "UTF-8");
 //            List<Map> list = JSON.parseArray(result, Map.class);
-            Map map = JSON.parseObject(result, Map.class);
+//            Map map = JSON.parseObject(result, Map.class);
 //            Map map = list.get(0);
-            if ("OK".equals(map.get("status"))) {
+//            if ("OK".equals(map.get("status"))) {
                 // 短信发送成功
                 // 存储验证码
                 stringRedisTemplate.opsForValue().set(countKey, fourBitRandom, 20, TimeUnit.MINUTES);
@@ -91,12 +91,13 @@ public class SmsServiceImpl implements SmsService {
                     stringRedisTemplate.opsForValue().increment(countKey);
                 } else {
                     //如果第一次获取验证码 , 之前的过期了
-                    stringRedisTemplate.opsForValue().set(countKey, fourBitRandom, 20, TimeUnit.MINUTES);
+                    stringRedisTemplate.opsForValue().set(countKey,"1",1,
+                            TimeUnit.DAYS);
                 }
 
-            } else {
-                throw new BusinessException(ResponseEnum.ALIYUN_SMS_ERROR);
-            }
+//            } else {
+//                throw new BusinessException(ResponseEnum.ALIYUN_SMS_ERROR);
+//            }
 
         } catch (Exception e) {
             throw new BusinessException(ResponseEnum.ALIYUN_SMS_ERROR, e);

@@ -489,3 +489,5 @@ SET FOREIGN_KEY_CHECKS = 1;
 
 USE srb_core;
 UPDATE integral_grade SET is_deleted = 0 WHERE is_deleted = 1;
+
+ALTER TABLE `srb_core`.`user_info` ADD COLUMN `salt` CHAR(6) NOT NULL COMMENT '用户密码的盐'
