@@ -53,9 +53,10 @@ public class JwtUtils {
 
     public static Long getUserId(String token) {
         Claims claims = getClaims(token);
-        Integer userId = (Integer)claims.get("userId");
-        return userId.longValue();
+        Long userId = (Long) claims.get("userId");
+        return userId;
     }
+
 
     public static String getUserName(String token) {
         Claims claims = getClaims(token);
