@@ -1,17 +1,18 @@
 package com.learn.srb.core.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.learn.common.exception.BusinessException;
 import com.learn.common.result.ResponseEnum;
 import com.learn.common.utils.Assert;
 import com.learn.common.utils.MD5;
 import com.learn.srb.base.config.constants.SrbConsts;
 import com.learn.srb.base.config.utils.JwtUtils;
-import com.learn.srb.core.pojo.entity.UserInfo;
 import com.learn.srb.core.mapper.UserInfoMapper;
+import com.learn.srb.core.pojo.entity.UserInfo;
+import com.learn.srb.core.pojo.entity.UserLoginRecord;
 import com.learn.srb.core.pojo.vo.UserRegisterVO;
 import com.learn.srb.core.service.UserInfoService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -99,6 +100,20 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         //对登录密码加密
         String encrypt = MD5.encrypt(MD5.encrypt(password) + salt);
         Assert.strNotEq(encrypt, encodedPwd, ResponseEnum.LOGIN_PASSWORD_ERROR);
+
+        //优化：
+        //判断用户的状态是否正常
+//        if(user.getStatus()!=1){
+//
+//        }
+        Assert.isTrue(user.getStatus()!=1 , ResponseEnum.LOGIN_LOCKED_ERROR);
+        //保存登录成功的日志：登录时的ip+时间
+        UserLoginRecord userLoginRecord = new UserLoginRecord();
+        userLoginRecord.setUserId(user.getId());
+        System.out.println(request.getRemoteHost());
+//        System.out.println(request.getRequestURI().toString());
+        String ip = request.getHeader("remote-host");
+        userLoginRecord.setIp(ip);
 
         //3、登录成功：构建jwt字符串返回
         String token = JwtUtils.createToken(user.getId(), user.getNickName());

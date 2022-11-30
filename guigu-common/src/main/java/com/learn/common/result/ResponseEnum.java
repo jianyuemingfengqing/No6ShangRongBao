@@ -51,7 +51,8 @@ public enum ResponseEnum {
     WEIXIN_FETCH_ACCESSTOKEN_ERROR(-602, "获取access_token失败"),
     WEIXIN_FETCH_USERINFO_ERROR(-603, "获取用户信息失败"),
     OSS_DELETE_ERROR(-104, "文件删除错误"),
-    USER_TYPE_NULL_ERROR(-3, "用户类型不能为空");
+    USER_TYPE_NULL_ERROR(-3, "用户类型不能为空"),
+    LOGIN_LOCKED_ERROR(-4,"用户状态异常" );
 
     // 响应状态码
     private Integer code;

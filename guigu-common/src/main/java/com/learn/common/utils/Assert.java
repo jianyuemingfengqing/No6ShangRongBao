@@ -45,4 +45,10 @@ public class Assert {
             throw new BusinessException(codeError);
         }
     }
+
+    public static void isTrue(boolean flag, ResponseEnum responseEnum) {
+        if (flag) {
+            throw new BusinessException(responseEnum);
+        }
+    }
 }
