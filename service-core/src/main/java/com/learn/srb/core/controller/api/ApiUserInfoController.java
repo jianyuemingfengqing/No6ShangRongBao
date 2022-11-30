@@ -13,6 +13,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * <p>
@@ -40,9 +41,9 @@ public class ApiUserInfoController {
 
     @ApiOperation(value = "登录")
     @PostMapping("login")
-    public R login(@RequestBody UserInfo userInfo) {
+    public R login(@RequestBody UserInfo userInfo, HttpServletRequest request) {
 
-        String token = userInfoService.login(userInfo);
+        String token = userInfoService.login(userInfo,request);
         return R.ok().data("token", token);
     }
 

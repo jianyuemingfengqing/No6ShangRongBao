@@ -17,6 +17,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.util.UUID;
 
 /**
@@ -77,7 +78,7 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
     }
 
     @Override
-    public String login(UserInfo userInfo) {
+    public String login(UserInfo userInfo, HttpServletRequest request) {
         //获取请求参数
         String mobile = userInfo.getMobile();
         String password = userInfo.getPassword();
@@ -110,7 +111,7 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         //保存登录成功的日志：登录时的ip+时间
         UserLoginRecord userLoginRecord = new UserLoginRecord();
         userLoginRecord.setUserId(user.getId());
-        System.out.println(request.getRemoteHost());
+//        System.out.println(request.getRemoteHost());
 //        System.out.println(request.getRequestURI().toString());
         String ip = request.getHeader("remote-host");
         userLoginRecord.setIp(ip);
