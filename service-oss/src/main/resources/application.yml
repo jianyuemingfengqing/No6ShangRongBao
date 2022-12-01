@@ -17,7 +17,10 @@ spring:
       max-file-size: 20MB
       # 一个表单所有的文件表单项提交文件总大小
       max-request-size: 50MB
-
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848
 #阿里云短信
 aliyun:
   oss:

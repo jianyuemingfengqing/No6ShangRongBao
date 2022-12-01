@@ -30,6 +30,10 @@ spring:
         max-idle: 20
         # 服务器运行稳定时 最终保留的redis连接数  默认8
         max-active: 10
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848
 #    serialization:
 #      write-enums-using-to-string: true
 mybatis-plus: #mybatis
