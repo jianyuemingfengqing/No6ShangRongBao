@@ -1,6 +1,7 @@
 package com.learn.srb.core.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.learn.common.exception.BusinessException;
 import com.learn.common.result.ResponseEnum;
@@ -11,8 +12,10 @@ import com.learn.srb.base.config.utils.JwtUtils;
 import com.learn.srb.core.mapper.UserInfoMapper;
 import com.learn.srb.core.pojo.entity.UserInfo;
 import com.learn.srb.core.pojo.entity.UserLoginRecord;
+import com.learn.srb.core.pojo.vo.UserInfoSearchVO;
 import com.learn.srb.core.pojo.vo.UserRegisterVO;
 import com.learn.srb.core.service.UserInfoService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -46,7 +49,7 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         Assert.notNull(userType, ResponseEnum.USER_TYPE_NULL_ERROR);
         //2、验证验证码
         String codeKey = SrbConsts.SMS_CODE_PREFIX + mobile + ":" + 0;
-        stringRedisTemplate.opsForValue().set(codeKey,code);
+        stringRedisTemplate.opsForValue().set(codeKey, code);
         String redisCode = stringRedisTemplate.opsForValue().get(codeKey);
         Assert.strNotEq(code, redisCode, ResponseEnum.CODE_ERROR);
 
@@ -107,7 +110,7 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
 //        if(user.getStatus()!=1){
 //
 //        }
-        Assert.isTrue(user.getStatus()!=1 , ResponseEnum.LOGIN_LOCKED_ERROR);
+        Assert.isTrue(user.getStatus() != 1, ResponseEnum.LOGIN_LOCKED_ERROR);
         //保存登录成功的日志：登录时的ip+时间
         UserLoginRecord userLoginRecord = new UserLoginRecord();
         userLoginRecord.setUserId(user.getId());
@@ -119,5 +122,26 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         //3、登录成功：构建jwt字符串返回
         String token = JwtUtils.createToken(user.getId(), user.getNickName());
         return token;
+    }
+
+    @Override
+    public void listUserInfos(Page<UserInfo> page, UserInfoSearchVO userInfoSearchVO) {
+        // 使用包装类是因为 基本返回类型默认值为0 不好处理, 而包装类基本返回类型为空
+        // 获取参数
+        Integer userType = userInfoSearchVO.getUserType();
+        String mobile = userInfoSearchVO.getMobile();
+        Integer status = userInfoSearchVO.getStatus();
+
+        LambdaQueryWrapper<UserInfo> queryWrapper = new LambdaQueryWrapper<>();
+        if (StringUtils.isNotEmpty(mobile)) {
+            queryWrapper.like(UserInfo::getMobile, mobile);
+        }
+        if (status != null) {
+            queryWrapper.eq(UserInfo::getStatus, status);
+        }
+        if (userType != null) {
+            queryWrapper.eq(UserInfo::getUserType, userType);
+        }
+        this.page(page, queryWrapper);
     }
 }
