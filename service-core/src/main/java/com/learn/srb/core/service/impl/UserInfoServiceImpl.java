@@ -15,6 +15,7 @@ import com.learn.srb.core.pojo.entity.UserLoginRecord;
 import com.learn.srb.core.pojo.vo.UserInfoSearchVO;
 import com.learn.srb.core.pojo.vo.UserRegisterVO;
 import com.learn.srb.core.service.UserInfoService;
+import com.learn.srb.core.service.UserLoginRecordService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
@@ -35,6 +36,8 @@ import java.util.UUID;
 public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> implements UserInfoService {
     @Resource
     StringRedisTemplate stringRedisTemplate;//使用存验证码的redis模板类对象来获取
+    @Resource
+    UserLoginRecordService userLoginRecordService;
 
     @Override
     public void register(UserRegisterVO userRegisterVO) {
@@ -118,7 +121,7 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
 //        System.out.println(request.getRequestURI().toString());
         String ip = request.getHeader("remote-host");
         userLoginRecord.setIp(ip);
-
+        userLoginRecordService.save(userLoginRecord);
         //3、登录成功：构建jwt字符串返回
         String token = JwtUtils.createToken(user.getId(), user.getNickName());
         return token;
