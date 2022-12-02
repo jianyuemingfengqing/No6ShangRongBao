@@ -34,3 +34,10 @@ aliyun:
     path: "/data/send_sms"
     method: "POST"
     templateId: "TPL_0000"
+logging:
+  level:
+    root: info
+    com.learn.srb.sms.feign.CoreClient: debug
+feign:
+  sentinel:
+    enabled: true

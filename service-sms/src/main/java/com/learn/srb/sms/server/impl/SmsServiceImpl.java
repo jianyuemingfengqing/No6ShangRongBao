@@ -1,17 +1,15 @@
 package com.learn.srb.sms.server.impl;
 
-import com.alibaba.fastjson.JSON;
 import com.learn.common.exception.BusinessException;
+import com.learn.common.result.R;
 import com.learn.common.result.ResponseEnum;
-import com.learn.common.utils.HttpUtils;
 import com.learn.common.utils.RandomUtils;
 import com.learn.common.utils.RegexValidateUtils;
 import com.learn.srb.base.config.constants.SrbConsts;
 import com.learn.srb.sms.config.SmsProperties;
+import com.learn.srb.sms.feign.CoreClient;
 import com.learn.srb.sms.server.SmsService;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.HttpResponse;
-import org.apache.http.util.EntityUtils;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +24,8 @@ public class SmsServiceImpl implements SmsService {
     StringRedisTemplate stringRedisTemplate;
     @Resource
     SmsProperties smsProperties;
+    @Resource
+    CoreClient coreClient;
 
     @Override
     public void sendMsg(String mobile, Integer type) {
@@ -51,6 +51,12 @@ public class SmsServiceImpl implements SmsService {
         String countStr = stringRedisTemplate.opsForValue().get(countKey);
         if (StringUtils.isNotEmpty(countStr) && Integer.parseInt(countStr) >= 3) {
             throw new BusinessException(ResponseEnum.ALIYUN_SMS_COUNTS_CONTROL_ERROR);
+        }
+        //-- 验证手机号码是否已被占用
+        // 操作会员表的服务是service-core，sms服务需要远程调用service-core才可以判断手机号码是否被占用
+        R r = coreClient.isRegist(mobile);
+        if(r.getCode()!=0 || !(boolean)(r.getData().get("flag"))){
+            throw new BusinessException(ResponseEnum.MOBILE_EXIST_ERROR);
         }
 
         try {

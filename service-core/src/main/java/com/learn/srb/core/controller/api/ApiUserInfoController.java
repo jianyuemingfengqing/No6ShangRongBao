@@ -1,6 +1,7 @@
 package com.learn.srb.core.controller.api;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.learn.common.result.R;
 import com.learn.srb.base.config.utils.JwtUtils;
 import com.learn.srb.core.pojo.entity.UserInfo;
@@ -43,7 +44,7 @@ public class ApiUserInfoController {
     @PostMapping("login")
     public R login(@RequestBody UserInfo userInfo, HttpServletRequest request) {
 
-        String token = userInfoService.login(userInfo,request);
+        String token = userInfoService.login(userInfo, request);
         return R.ok().data("token", token);
     }
 
@@ -57,6 +58,15 @@ public class ApiUserInfoController {
         UserInfoVo userInfoVo = new UserInfoVo();
         BeanUtils.copyProperties(userInfo, userInfoVo);
         return R.ok().data("item", userInfoVo);
+    }
+
+    @ApiOperation(value = "判断注册手机号是否被占用")
+    @GetMapping("isRegist/{mobile}")
+    public R isRegist(@PathVariable(value = "mobile") String mobile) {
+        int count = userInfoService.count(
+                new LambdaQueryWrapper<UserInfo>().eq(UserInfo::getMobile, mobile)
+        );
+        return R.ok().data("flag", count == 0);  // 判断记录是否等于0, 等于0 说明没有被占用
     }
 }
 
