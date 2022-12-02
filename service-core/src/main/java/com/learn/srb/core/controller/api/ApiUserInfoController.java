@@ -26,7 +26,6 @@ import javax.servlet.http.HttpServletRequest;
  */
 @RestController
 @RequestMapping("/api/core/userInfo")
-@CrossOrigin
 @Api(tags = "用户信息模块")
 public class ApiUserInfoController {
     @Resource

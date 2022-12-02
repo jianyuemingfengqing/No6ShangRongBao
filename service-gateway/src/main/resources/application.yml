@@ -1,0 +1,39 @@
+server:
+  port: 9110
+spring:
+  application:
+    name: srb-gateway
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848
+    gateway:
+      routes:   # List<RouteDefinition>
+        - id: route-core
+          # 断言成功后 处理请求的目标服务
+          uri: lb://service-core
+          # 访问 http://localhost:9110/xxx/core/adasd  请求会交给service-core来处理
+          #       http://192.168.137.1:8110/xxx/core/adasd
+          predicates:
+            - Path=/*/core/**
+        - id: route-sms
+          # 断言成功后 处理请求的目标服务
+          uri: lb://service-sms
+          # 访问 http://localhost:9110/xxx/core/adasd  请求会交给service-core来处理
+          #       http://192.168.137.1:8110/xxx/core/adasd
+          predicates:
+            - Path=/*/sms/**
+        - id: route-oss
+          # 断言成功后 处理请求的目标服务
+          uri: lb://service-oss
+          # 访问 http://localhost:9110/xxx/core/adasd  请求会交给service-core来处理
+          #       http://192.168.137.1:8110/xxx/core/adasd
+          predicates:
+            - Path=/*/oss/**
+    # 自动根据nacos注册中心生成路由
+      # 生成路由的断言路径使用 服务名开始
+      # 例如： service-core 生成的路由路径为  /service-core
+      #      访问该服务的路径为   http://localhost:9110/service-core/admin/user.....
+#      discovery:
+#        locator:
+#          enabled: true

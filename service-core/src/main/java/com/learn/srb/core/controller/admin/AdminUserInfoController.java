@@ -23,7 +23,7 @@ import javax.annotation.Resource;
  */
 @RestController
 @RequestMapping("/admin/core/userInfo")
-@CrossOrigin
+
 @Api(tags = "后台管理  用户信息模块")
 public class AdminUserInfoController {
     @Resource

@@ -77,7 +77,7 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         userInfo.setUserType(userType);
         userInfo.setSalt(salt);
         userInfo.setHeadImg("https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif");
-        userInfo.setNickName("谷粉" + UUID.randomUUID().toString().substring(0, 6));
+        userInfo.setNickName("原坯" + UUID.randomUUID().toString().substring(0, 6));
         this.save(userInfo);
         //删除redis中缓存的验证码
         stringRedisTemplate.delete(codeKey);

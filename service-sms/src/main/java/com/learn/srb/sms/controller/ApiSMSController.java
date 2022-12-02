@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 
 @RestController
-@CrossOrigin
+
 @RequestMapping("/api/sms")
 public class ApiSMSController {
     @Resource

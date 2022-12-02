@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
  * @since 2022-11-19
  */
 @Api(tags = "数据字典后台管理")
-@CrossOrigin
+
 @RestController
 @RequestMapping("/admin/core/dict")
 public class AdminDictController {
