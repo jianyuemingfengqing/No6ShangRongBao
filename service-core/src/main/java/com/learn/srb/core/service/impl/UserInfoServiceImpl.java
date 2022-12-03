@@ -1,6 +1,7 @@
 package com.learn.srb.core.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.learn.common.exception.BusinessException;
@@ -10,18 +11,23 @@ import com.learn.common.utils.MD5;
 import com.learn.srb.base.config.constants.SrbConsts;
 import com.learn.srb.base.config.utils.JwtUtils;
 import com.learn.srb.core.mapper.UserInfoMapper;
+import com.learn.srb.core.pojo.entity.UserAccount;
 import com.learn.srb.core.pojo.entity.UserInfo;
 import com.learn.srb.core.pojo.entity.UserLoginRecord;
+import com.learn.srb.core.pojo.vo.UserIndexVO;
 import com.learn.srb.core.pojo.vo.UserInfoSearchVO;
 import com.learn.srb.core.pojo.vo.UserRegisterVO;
+import com.learn.srb.core.service.UserAccountService;
 import com.learn.srb.core.service.UserInfoService;
 import com.learn.srb.core.service.UserLoginRecordService;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.math.BigDecimal;
 import java.util.UUID;
 
 /**
@@ -38,6 +44,8 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
     StringRedisTemplate stringRedisTemplate;//使用存验证码的redis模板类对象来获取
     @Resource
     UserLoginRecordService userLoginRecordService;
+    @Resource
+    UserAccountService userAccountService;
 
     @Override
     public void register(UserRegisterVO userRegisterVO) {
@@ -146,5 +154,27 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
             queryWrapper.eq(UserInfo::getUserType, userType);
         }
         this.page(page, queryWrapper);
+    }
+
+    @Override
+    public UserIndexVO getUserIndex(String token) {
+        Long userId = JwtUtils.getUserId(token);
+        UserIndexVO userIndexVO = new UserIndexVO();
+        //查询userInfo
+        UserInfo userInfo = this.getById(userId); // 因为名称是和token 一致的所以可以直接用
+        BeanUtils.copyProperties(userInfo, userIndexVO); // 给userIndexVO 赋值, userIndexVO 从 userinfo复制的,直接用
+        //查询最近的一条登录日志
+        UserLoginRecord userLoginRecord = userLoginRecordService.getOne(Wrappers.lambdaQuery(UserLoginRecord.class)
+                .eq(UserLoginRecord::getUserId, userId)
+                .select(UserLoginRecord::getCreateTime)
+                .orderByDesc(UserLoginRecord::getCreateTime)
+                .last("limit 1"));
+        userIndexVO.setLastLoginTime(userLoginRecord.getCreateTime());
+        //查询账户信息
+        UserAccount userAccount = userAccountService.getOne(Wrappers.lambdaQuery(UserAccount.class)
+                .eq(UserAccount::getUserId, userId));
+        userIndexVO.setAmount(userAccount == null ? new BigDecimal("0") : userAccount.getAmount());
+        userIndexVO.setFreezeAmount(userAccount == null ? new BigDecimal("0") : userAccount.getFreezeAmount());
+        return userIndexVO;
     }
 }

@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.learn.common.result.R;
 import com.learn.srb.base.config.utils.JwtUtils;
 import com.learn.srb.core.pojo.entity.UserInfo;
+import com.learn.srb.core.pojo.vo.UserIndexVO;
 import com.learn.srb.core.pojo.vo.UserInfoVo;
 import com.learn.srb.core.pojo.vo.UserRegisterVO;
 import com.learn.srb.core.service.UserInfoService;
@@ -66,6 +67,13 @@ public class ApiUserInfoController {
                 new LambdaQueryWrapper<UserInfo>().eq(UserInfo::getMobile, mobile)
         );
         return R.ok().data("flag", count == 0);  // 判断记录是否等于0, 等于0 说明没有被占用
+    }
+
+    @ApiOperation("用户中心首页数据查询")
+    @GetMapping("auth/getUserIndex")
+    public R getUserIndex(@RequestHeader(value = "token", required = false) String token) {
+        UserIndexVO userIndexVO = userInfoService.getUserIndex(token);
+        return R.ok().data("item", userIndexVO);
     }
 }
 

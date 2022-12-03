@@ -3,6 +3,7 @@ package com.learn.srb.core.service;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.learn.srb.core.pojo.entity.UserInfo;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.learn.srb.core.pojo.vo.UserIndexVO;
 import com.learn.srb.core.pojo.vo.UserInfoSearchVO;
 import com.learn.srb.core.pojo.vo.UserRegisterVO;
 
@@ -23,4 +24,6 @@ public interface UserInfoService extends IService<UserInfo> {
     String login(UserInfo userInfo, HttpServletRequest request);
 
     void listUserInfos(Page<UserInfo> page, UserInfoSearchVO userInfoSearchVO);
+
+    UserIndexVO getUserIndex(String token);
 }
