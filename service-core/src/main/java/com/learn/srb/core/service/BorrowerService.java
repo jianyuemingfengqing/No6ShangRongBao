@@ -2,6 +2,7 @@ package com.learn.srb.core.service;
 
 import com.learn.srb.core.pojo.entity.Borrower;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.learn.srb.core.pojo.vo.BorrowerApprovalVO;
 import com.learn.srb.core.pojo.vo.BorrowerDetailVO;
 import com.learn.srb.core.pojo.vo.BorrowerVO;
 
@@ -18,4 +19,6 @@ public interface BorrowerService extends IService<Borrower> {
     void saveBorrower(BorrowerVO borrowerVO, String token);
 
     BorrowerDetailVO getBorrowerDetail(String id);
+
+    void approval(BorrowerApprovalVO vo);
 }

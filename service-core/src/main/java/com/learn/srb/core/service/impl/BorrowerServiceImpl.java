@@ -8,7 +8,7 @@ import com.learn.srb.core.mapper.BorrowerMapper;
 import com.learn.srb.core.pojo.entity.Borrower;
 import com.learn.srb.core.pojo.entity.BorrowerAttach;
 import com.learn.srb.core.pojo.entity.UserInfo;
-import com.learn.srb.core.pojo.entity.UserIntegral;
+import com.learn.srb.core.pojo.vo.BorrowerApprovalVO;
 import com.learn.srb.core.pojo.vo.BorrowerDetailVO;
 import com.learn.srb.core.pojo.vo.BorrowerVO;
 import com.learn.srb.core.service.*;
@@ -129,6 +129,11 @@ public class BorrowerServiceImpl extends ServiceImpl<BorrowerMapper, Borrower> i
 
         vo.setAttaches(borrowerAttaches);
         return vo;
+    }
+
+    @Override
+    public void approval(BorrowerApprovalVO vo) {
+
     }
 /*
     @Override

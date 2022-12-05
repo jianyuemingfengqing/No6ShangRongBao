@@ -7,14 +7,12 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.learn.common.result.R;
 import com.learn.srb.core.pojo.entity.Borrower;
+import com.learn.srb.core.pojo.vo.BorrowerApprovalVO;
 import com.learn.srb.core.pojo.vo.BorrowerDetailVO;
 import com.learn.srb.core.service.BorrowerService;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
@@ -56,13 +54,14 @@ public class AdminBorrowerController {
         BorrowerDetailVO vo = borrowerService.getBorrowerDetail(id);
         return R.ok().data("item",vo);
     }
-/*    @ApiOperation("借款人审批")
+
+  @ApiOperation("借款人审批")
     @PostMapping("approval")
     public R approval(@RequestBody BorrowerApprovalVO vo){
         borrowerService.approval(vo);
         return R.ok().message("审批完成");
     }
-   */
+
 
 }
 
