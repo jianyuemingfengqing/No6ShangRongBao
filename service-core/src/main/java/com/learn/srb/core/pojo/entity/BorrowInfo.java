@@ -10,11 +10,12 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
  * <p>
- * 借款人上传资源表
+ * 借款信息表
  * </p>
  *
  * @author jianyueming
@@ -22,8 +23,8 @@ import java.util.Date;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@ApiModel(value="BorrowerAttach对象", description="借款人上传资源表")
-public class BorrowerAttach implements Serializable {
+@ApiModel(value="BorrowInfo对象", description="借款信息表")
+public class BorrowInfo implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -31,20 +32,26 @@ public class BorrowerAttach implements Serializable {
       @TableId(value = "id", type = IdType.ASSIGN_ID)
     private Long id;
 
-    @ApiModelProperty(value = "借款人id")
-    private Long borrowerId;
+    @ApiModelProperty(value = "借款用户id")
+    private Long userId;
 
-    @ApiModelProperty(value = "图片类型（idCard1：身份证正面，idCard2：身份证反面，house：房产证，car：车）")
-    private String imageType;
-    // 将 数字 转为 字符串 使前端不用在转换可以直接调用
-    @TableField(exist = false)
-    private String imageLabel;
+    @ApiModelProperty(value = "借款金额")
+    private BigDecimal amount;
 
-    @ApiModelProperty(value = "图片路径")
-    private String imageUrl;
+    @ApiModelProperty(value = "借款期限")
+    private Integer period;
 
-    @ApiModelProperty(value = "图片名称")
-    private String imageName;
+    @ApiModelProperty(value = "年化利率")
+    private BigDecimal borrowYearRate;
+
+    @ApiModelProperty(value = "还款方式 1-等额本息 2-等额本金 3-每月还息一次还本 4-一次还本")
+    private Integer returnMethod;
+
+    @ApiModelProperty(value = "资金用途")
+    private Integer moneyUse;
+
+    @ApiModelProperty(value = "状态（0：未提交，1：审核中， 2：审核通过， -1：审核不通过）")
+    private Integer status;
 
     @ApiModelProperty(value = "创建时间")
     private Date createTime;
@@ -56,5 +63,6 @@ public class BorrowerAttach implements Serializable {
     @TableField("is_deleted")
     @TableLogic
     private Boolean deleted;
+
 
 }
