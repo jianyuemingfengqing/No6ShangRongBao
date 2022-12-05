@@ -1,12 +1,15 @@
 package com.learn.srb.core.service.impl;
 
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.learn.srb.base.config.utils.JwtUtils;
 import com.learn.srb.core.mapper.BorrowerMapper;
 import com.learn.srb.core.pojo.entity.Borrower;
 import com.learn.srb.core.pojo.entity.BorrowerAttach;
 import com.learn.srb.core.pojo.entity.UserInfo;
+import com.learn.srb.core.pojo.entity.UserIntegral;
+import com.learn.srb.core.pojo.vo.BorrowerDetailVO;
 import com.learn.srb.core.pojo.vo.BorrowerVO;
 import com.learn.srb.core.service.*;
 import org.springframework.beans.BeanUtils;
@@ -34,13 +37,14 @@ public class BorrowerServiceImpl extends ServiceImpl<BorrowerMapper, Borrower> i
     UserIntegralService userIntegralService;
     @Resource
     DictService dictService;
+
     @Override
-    public void saveBorrower(BorrowerVO borrowerVO,String token) {
+    public void saveBorrower(BorrowerVO borrowerVO, String token) {
         Long userId = JwtUtils.getUserId(token);
         UserInfo userInfo = userInfoService.getById(userId);
 
         Borrower borrower = new Borrower();//借款人数据部分数据是登录用户实名认证的数据, 需要token
-        BeanUtils.copyProperties(borrowerVO , borrower);       // 存储borrower中有的
+        BeanUtils.copyProperties(borrowerVO, borrower);       // 存储borrower中有的
         // 给borrower没有的字段中添加数据
         borrower.setIdCard(userInfo.getIdCard());
         borrower.setUserId(userId);
@@ -51,25 +55,25 @@ public class BorrowerServiceImpl extends ServiceImpl<BorrowerMapper, Borrower> i
         //保存借款人附件数据
         List<BorrowerAttach> attaches = borrowerVO.getAttachs();
 
-        if(!CollectionUtils.isEmpty(attaches)){
+        if (!CollectionUtils.isEmpty(attaches)) {
             //为所有的附件对象设置借款人id
-            attaches.forEach(attach->{
+            attaches.forEach(attach -> {
                 attach.setBorrowerId(borrower.getId());
             });
             borrowerAttachService.saveBatch(attaches);
         }
     }
-/*
+
     @Override
     public BorrowerDetailVO getBorrowerDetail(String id) {
         BorrowerDetailVO vo = new BorrowerDetailVO();
         //1、查询借款人数据
         Borrower borrower = this.getById(id);
-        BeanUtils.copyProperties(borrower,vo);
+        BeanUtils.copyProperties(borrower, vo);
         //2、完善借款人vo的 需要设置字符串的属性值
-        vo.setSex(borrower.getSex()==1?"男":"女");
-        vo.setMarry(borrower.getMarry()?"是":"否");
-        switch(borrower.getStatus()){
+        vo.setSex(borrower.getSex() == 1 ? "男" : "女");
+        vo.setMarry(borrower.getMarry() ? "是" : "否");
+        switch (borrower.getStatus()) {
             case 1:
                 vo.setStatus("认证中");
                 break;
@@ -86,23 +90,28 @@ public class BorrowerServiceImpl extends ServiceImpl<BorrowerMapper, Borrower> i
         //borrower中存储的是学历的value值： 代表选中的学历的value值
         //使用学历的 dictCode值+ 选中的二级数据字典的 value值 查询 数据字典的name
 
-        String education = dictService.getDictNameByDictCodeAndValue("education",borrower.getEducation());
+        String education = dictService.getDictNameByDictCodeAndValue("education", borrower.getEducation());
         vo.setEducation(education);
-        String income = dictService.getDictNameByDictCodeAndValue("income",borrower.getIncome());
+
+        String income = dictService.getDictNameByDictCodeAndValue("income", borrower.getIncome());
         vo.setIncome(income);
-        String industry = dictService.getDictNameByDictCodeAndValue("industry",borrower.getIndustry());
+
+        String industry = dictService.getDictNameByDictCodeAndValue("industry", borrower.getIndustry());
         vo.setIndustry(industry);
-        String returnSource = dictService.getDictNameByDictCodeAndValue("returnSource",borrower.getReturnSource());
+
+        String returnSource = dictService.getDictNameByDictCodeAndValue("returnSource", borrower.getReturnSource());
         vo.setReturnSource(returnSource);
-        String relation = dictService.getDictNameByDictCodeAndValue("relation",borrower.getContactsRelation());
+
+        String relation = dictService.getDictNameByDictCodeAndValue("relation", borrower.getContactsRelation());
         vo.setContactsRelation(relation);
         //3、查询借款人的附件数据
-        List<BorrowerAttach> borrowerAttaches = borrowerAttachService.list(Wrappers.lambdaQuery(BorrowerAttach.class)
-                .eq(BorrowerAttach::getBorrowerId, id));
+        List<BorrowerAttach> borrowerAttaches = borrowerAttachService.list(
+                Wrappers.lambdaQuery(BorrowerAttach.class)
+                        .eq(BorrowerAttach::getBorrowerId, id));
         //遍历附件集合  修改每个附件的 imageLabel值方便前端遍历展示
         //图片类型imageType  （idCard1：身份证正面，idCard2：身份证反面，house：房产证，car：车）
         borrowerAttaches.forEach(borrowerAttach -> {
-            switch (borrowerAttach.getImageType()){
+            switch (borrowerAttach.getImageType()) {
                 case "idCard1":
                     borrowerAttach.setImageLabel("身份证正面");
                     break;
@@ -121,7 +130,7 @@ public class BorrowerServiceImpl extends ServiceImpl<BorrowerMapper, Borrower> i
         vo.setAttaches(borrowerAttaches);
         return vo;
     }
-
+/*
     @Override
     public void approval(BorrowerApprovalVO vo) {
         //审批结果对应的表：

@@ -81,4 +81,9 @@ public class DictServiceImpl extends ServiceImpl<DictMapper, Dict> implements Di
     public List<Dict> getDictsByDictCode(String dictCode) {
         return baseMapper.selectDictsByDictCode(dictCode);
     }
+
+    @Override
+    public String getDictNameByDictCodeAndValue(String dictCode, Integer value) {
+        return baseMapper.selectDictNameByDictCodeAndValue(dictCode,value);
+    }
 }

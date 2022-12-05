@@ -1,7 +1,8 @@
 package com.learn.srb.core.mapper;
 
-import com.learn.srb.core.pojo.entity.Dict;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.learn.srb.core.pojo.entity.Dict;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -16,4 +17,6 @@ import java.util.List;
 public interface DictMapper extends BaseMapper<Dict> {
 
     List<Dict> selectDictsByDictCode(String dictCode);
+
+    String selectDictNameByDictCodeAndValue(@Param("dictCode") String dictCode, @Param("value")Integer value);
 }
