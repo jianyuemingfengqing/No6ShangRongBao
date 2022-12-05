@@ -26,7 +26,7 @@ public class OssServiceImpl implements OssService {
 //        String filePath = "J:\\img\\1.jpeg";
 //        String module = "imgs";// 所在桶的文件夹
 
-        String filePath = "J:\\img\\" + file.getOriginalFilename(); // 获取文件名
+        String filePath = "J:\\图片\\头像jpg/" + file.getOriginalFilename(); // 获取文件名
 
         String objectName = module + new DateTime().toString("/yyyy/MM/dd/")//时间戳
                                     + System.currentTimeMillis()
