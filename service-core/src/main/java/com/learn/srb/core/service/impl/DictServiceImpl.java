@@ -76,4 +76,9 @@ public class DictServiceImpl extends ServiceImpl<DictMapper, Dict> implements Di
     public void updateDict(Dict dict) {
         this.updateById(dict);
     }
+
+    @Override
+    public List<Dict> getDictsByDictCode(String dictCode) {
+        return baseMapper.selectDictsByDictCode(dictCode);
+    }
 }

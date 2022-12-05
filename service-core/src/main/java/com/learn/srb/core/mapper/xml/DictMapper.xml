@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.learn.srb.core.mapper.DictMapper">
+    <!--查询 下一级的数据字典集合
+
+   org.apache.ibatis.binding.BindingException:
+   Invalid bound statement (not found): com.atguigu.srb.core.mapper.DictMapper.selectDictsByDictCode
+       Mapper接口绑定xml映射文件失败导致：
+               mapper接口找不到映射的xml
+               xml中没有绑定mapper中的抽象方法
+   -->
+    <select id="selectDictsByDictCode" resultType="com.learn.srb.core.pojo.entity.Dict">
+        SELECT t2.*
+        FROM dict t1
+                 JOIN dict t2
+                      ON t1.`id` = t2.`parent_id`
+        WHERE t1.`dict_code` = #{dictCode}
+    </select>
+
+    <select id="selectDictNameByDictCodeAndValue" resultType="java.lang.String">
+        SELECT t2.name
+        FROM dict t1
+                 JOIN dict t2
+                      ON t1.`id` = t2.`parent_id`
+        WHERE t1.dict_code = #{dictCode}
+          AND t2.`value` = #{value}
+    </select>
+</mapper>
