@@ -1,6 +1,7 @@
 package com.learn.srb.core.service.impl;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.learn.common.result.ResponseEnum;
 import com.learn.common.utils.Assert;
@@ -9,11 +10,13 @@ import com.learn.srb.core.mapper.BorrowInfoMapper;
 import com.learn.srb.core.pojo.entity.BorrowInfo;
 import com.learn.srb.core.pojo.entity.IntegralGrade;
 import com.learn.srb.core.pojo.entity.UserInfo;
+import com.learn.srb.core.pojo.vo.BorrowInfoVO;
 import com.learn.srb.core.service.*;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * <p>
@@ -53,7 +56,6 @@ public class BorrowInfoServiceImpl extends ServiceImpl<BorrowInfoMapper, BorrowI
         return integralGrade == null ? new BigDecimal("0") : integralGrade.getBorrowAmount();
     }
 
-
     @Override
     public void commitBorrow(BorrowInfo borrowInfo, String token) {
         Long userId = JwtUtils.getUserId(token);
@@ -81,36 +83,41 @@ public class BorrowInfoServiceImpl extends ServiceImpl<BorrowInfoMapper, BorrowI
         borrowInfo.setStatus(1);
         this.save(borrowInfo);
     }
-/*
+
     @Override
     public void listBorrowInfoVOs(Page<BorrowInfoVO> page) {
-        //查询borrowInfo的分页数据
-        //查询每个borrowInfo的borrower数据
+        /*获取数据
+          查询borrowInfo的分页数据
+          查询每个borrowInfo的borrower数据*/
 
-        // mybatisplus 自定义mapper方法 如果传入了Page对象 它会自动使用page对象的分页条件查询数据
-        //   1、根据泛型查询映射的表的记录条数
-        //   2、page会自动计算 总页码  等数据
-        //   3、分页条件会通过分页拦截器 自动追加到sql后面
+      /*   mybatisplus 自定义mapper方法 如果传入了Page对象 它会自动使用page对象的分页条件查询数据
+           1、根据泛型查询映射的表的记录条数
+           2、page会自动计算 总页码  等数据
+           3、分页条件会通过分页拦截器 自动追加到sql后面*/
         //自定义sql实现分页查询
         Page<BorrowInfo> borrowInfoPage = new Page<>(page.getCurrent(), page.getSize());
         //返回的结果是查询到的BorrowInfoVO集合
         List<BorrowInfoVO> borrowInfoVOS = baseMapper.selectBorrowInfoVOs(borrowInfoPage);
         //遍历修改每一个借款信息的  还款方式+用途
         borrowInfoVOS.forEach(borrowInfoVO -> {
-            borrowInfoVO.setMoneyUse(dictService
-                    .getDictNameByDictCodeAndValue("moneyUse",
-                            Integer.parseInt(borrowInfoVO.getMoneyUse())));
-
-            borrowInfoVO.setReturnMethod(dictService
-                    .getDictNameByDictCodeAndValue("returnMethod",
-                            Integer.parseInt(borrowInfoVO.getReturnMethod())));
+            borrowInfoVO.setMoneyUse(
+                    dictService.getDictNameByDictCodeAndValue(
+                            "moneyUse", Integer.parseInt(borrowInfoVO.getMoneyUse())
+                    )
+            );
+            borrowInfoVO.setReturnMethod(
+                    dictService.getDictNameByDictCodeAndValue(
+                            "returnMethod", Integer.parseInt(borrowInfoVO.getReturnMethod())
+                    )
+            );
         });
-
 
         page.setRecords(borrowInfoVOS);
         page.setTotal(borrowInfoPage.getTotal());
         page.setPages(borrowInfoPage.getPages());
     }
+
+/*
 
     @Override
     public Map<String, Object> getBorrowInfo(String id) {
