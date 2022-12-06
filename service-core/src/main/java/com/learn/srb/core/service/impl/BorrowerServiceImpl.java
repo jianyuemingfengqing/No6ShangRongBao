@@ -8,6 +8,7 @@ import com.learn.srb.core.mapper.BorrowerMapper;
 import com.learn.srb.core.pojo.entity.Borrower;
 import com.learn.srb.core.pojo.entity.BorrowerAttach;
 import com.learn.srb.core.pojo.entity.UserInfo;
+import com.learn.srb.core.pojo.entity.UserIntegral;
 import com.learn.srb.core.pojo.vo.BorrowerApprovalVO;
 import com.learn.srb.core.pojo.vo.BorrowerDetailVO;
 import com.learn.srb.core.pojo.vo.BorrowerVO;
@@ -131,11 +132,7 @@ public class BorrowerServiceImpl extends ServiceImpl<BorrowerMapper, Borrower> i
         return vo;
     }
 
-    @Override
-    public void approval(BorrowerApprovalVO vo) {
 
-    }
-/*
     @Override
     public void approval(BorrowerApprovalVO vo) {
         //审批结果对应的表：
@@ -145,11 +142,11 @@ public class BorrowerServiceImpl extends ServiceImpl<BorrowerMapper, Borrower> i
         Integer status = vo.getStatus();
         //更新借款人表中的状态
         this.update(Wrappers.lambdaUpdate(Borrower.class)
-                .eq(Borrower::getId,vo.getBorrowerId())
-                .set(Borrower::getStatus , status));
+                .eq(Borrower::getId, vo.getBorrowerId()) // 根据id查找借款人
+                .set(Borrower::getStatus, status)); // 设置状态
         //更新用户表中的借款人认证状态
         userInfo.setBorrowAuthStatus(status);
-        if(status==-1){
+        if (status == -1) { // 认证失败, 不需要执行下面操作
             userInfoService.updateById(userInfo);
             return;
         }
@@ -164,43 +161,44 @@ public class BorrowerServiceImpl extends ServiceImpl<BorrowerMapper, Borrower> i
         userIntegral.setContent("基本信息积分");
         userIntegral.setUserId(borrower.getUserId());
         userIntegralService.save(userIntegral);
-        totalIntegral+=infoIntegral;
+        totalIntegral += infoIntegral;
+
         Boolean isIdCardOk = vo.getIsIdCardOk();
         //身份认证积分: 30
-        if(isIdCardOk){
+        if (isIdCardOk) {
             userIntegral = new UserIntegral();
             userIntegral.setIntegral(30);
             userIntegral.setContent("身份信息积分");
             userIntegral.setUserId(borrower.getUserId());
             userIntegralService.save(userIntegral);
-            totalIntegral+=30;
+            totalIntegral += 30;
         }
         Boolean isCarOk = vo.getIsCarOk();
         //车辆认证积分: 60
-        if(isCarOk){
+        if (isCarOk) {
             userIntegral = new UserIntegral();
             userIntegral.setIntegral(60);
             userIntegral.setContent("车辆信息积分");
             userIntegral.setUserId(borrower.getUserId());
             userIntegralService.save(userIntegral);
-            totalIntegral+=60;
+            totalIntegral += 60;
         }
         Boolean isHouseOk = vo.getIsHouseOk();
         //房产认证积分: 100
-        if(isHouseOk){
+        if (isHouseOk) {
             userIntegral = new UserIntegral();
             userIntegral.setIntegral(100);
             userIntegral.setContent("v信息积分");
             userIntegral.setUserId(borrower.getUserId());
             userIntegralService.save(userIntegral);
-            totalIntegral+=100;
+            totalIntegral += 100;
         }
         //user_info:  保存用户可用的总积分
 
         //userInfoService.update(Wrappers.lambdaUpdate(UserInfo))
 
         //修改总积分
-        userInfo.setIntegral(userInfo.getIntegral()+totalIntegral);
+        userInfo.setIntegral(userInfo.getIntegral() + totalIntegral);
         userInfoService.updateById(userInfo);
-    }*/
+    }
 }
