@@ -18,4 +18,6 @@ import java.util.List;
 public interface BorrowInfoMapper extends BaseMapper<BorrowInfo> {
 
     List<BorrowInfoVO> selectBorrowInfoVOs(Page<BorrowInfo> borrowInfoPage);
+
+    BorrowInfoVO selectBorrowInfoVOById(String id);
 }

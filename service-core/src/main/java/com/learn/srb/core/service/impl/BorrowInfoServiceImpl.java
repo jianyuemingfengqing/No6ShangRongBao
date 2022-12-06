@@ -8,15 +8,20 @@ import com.learn.common.utils.Assert;
 import com.learn.srb.base.config.utils.JwtUtils;
 import com.learn.srb.core.mapper.BorrowInfoMapper;
 import com.learn.srb.core.pojo.entity.BorrowInfo;
+import com.learn.srb.core.pojo.entity.Borrower;
 import com.learn.srb.core.pojo.entity.IntegralGrade;
 import com.learn.srb.core.pojo.entity.UserInfo;
+import com.learn.srb.core.pojo.vo.BorrowInfoApprovalVO;
 import com.learn.srb.core.pojo.vo.BorrowInfoVO;
+import com.learn.srb.core.pojo.vo.BorrowerDetailVO;
 import com.learn.srb.core.service.*;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -117,31 +122,34 @@ public class BorrowInfoServiceImpl extends ServiceImpl<BorrowInfoMapper, BorrowI
         page.setPages(borrowInfoPage.getPages());
     }
 
-/*
-
     @Override
     public Map<String, Object> getBorrowInfo(String id) {
         //根据borrowInfo借款id获取借款信息
         BorrowInfoVO borrowInfoVO = baseMapper.selectBorrowInfoVOById(id);
-        borrowInfoVO.setMoneyUse(dictService
-                .getDictNameByDictCodeAndValue("moneyUse",
-                        Integer.parseInt(borrowInfoVO.getMoneyUse())));
-
-        borrowInfoVO.setReturnMethod(dictService
-                .getDictNameByDictCodeAndValue("returnMethod",
-                        Integer.parseInt(borrowInfoVO.getReturnMethod())));
+        borrowInfoVO.setMoneyUse(
+                dictService.getDictNameByDictCodeAndValue(
+                        "moneyUse", Integer.parseInt(borrowInfoVO.getMoneyUse())
+                )
+        );
+        borrowInfoVO.setReturnMethod(
+                dictService.getDictNameByDictCodeAndValue(
+                        "returnMethod", Integer.parseInt(borrowInfoVO.getReturnMethod())
+                )
+        );
         //获取borrower借款人用户id
         Long userId = borrowInfoVO.getUserId();
         //根据用户id获取借款人id
-        Borrower borrower = borrowerService.getOne(Wrappers.lambdaQuery(Borrower.class)
-                .eq(Borrower::getUserId, userId)
-                .select(Borrower::getId));
+        Borrower borrower = borrowerService.getOne(
+                Wrappers.lambdaQuery(Borrower.class)
+                        .eq(Borrower::getUserId, userId)
+                        .select(Borrower::getId)
+        );
         //获取借款人详情
         BorrowerDetailVO borrowerDetailVO = borrowerService.getBorrowerDetail(borrower.getId().toString());
 
         Map<String, Object> map = new HashMap<>();
-        map.put("borrowInfoVO",borrowInfoVO);
-        map.put("borrowerDetailVO",borrowerDetailVO);
+        map.put("borrowInfoVO", borrowInfoVO);
+        map.put("borrowerDetailVO", borrowerDetailVO);
         return map;
     }
 
@@ -158,6 +166,5 @@ public class BorrowInfoServiceImpl extends ServiceImpl<BorrowInfoMapper, BorrowI
             lendService.createLend(borrowInfoApprovalVO, borrowId);
         }
     }
-*/
 
 }

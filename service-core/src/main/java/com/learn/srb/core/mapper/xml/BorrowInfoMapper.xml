@@ -21,4 +21,23 @@
                  LEFT JOIN borrower b2
                            ON b1.`user_id` = b2.`user_id`
     </select>
+
+    <select id="selectBorrowInfoVOById" resultType="com.learn.srb.core.pojo.vo.BorrowInfoVO">
+        SELECT b1.id,
+               b1.`amount`,
+               CONCAT(b1.`period`, '个月')              AS period,
+               b1.user_id,
+               CONCAT(b1.`borrow_year_rate` * 100, '%') AS borrow_year_rate,
+               b1.create_time,
+               b1.return_method,
+               b1.money_use,
+               CASE b1.`status`
+                   WHEN 1 THEN '审核中'
+                   WHEN 2 THEN '审核通过'
+                   WHEN 0 THEN '未提交'
+                   ELSE '审核失败'
+                   END                                  AS `status`
+        FROM borrow_info b1
+        WHERE b1.id = #{id}
+    </select>
 </mapper>
