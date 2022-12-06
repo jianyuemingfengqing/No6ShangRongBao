@@ -10,7 +10,6 @@ spring:
     type: com.zaxxer.hikari.HikariDataSource
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://192.168.176.128:3396/srb_core?serverTimezone=GMT%2B8&characterEncoding=utf-8
-#    url: jdbc:mysql://192.168.144.129:3396/srb_core?serverTimezone=GMT%2B8&characterEncoding=utf-8
     username: root
     password: 123456
   jackson:
