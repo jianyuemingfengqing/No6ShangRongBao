@@ -2,6 +2,8 @@ package com.learn.srb.core.service.impl;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.learn.common.result.ResponseEnum;
+import com.learn.common.utils.Assert;
 import com.learn.srb.base.config.utils.JwtUtils;
 import com.learn.srb.core.mapper.BorrowInfoMapper;
 import com.learn.srb.core.pojo.entity.BorrowInfo;
@@ -36,11 +38,6 @@ public class BorrowInfoServiceImpl extends ServiceImpl<BorrowInfoMapper, BorrowI
     LendService lendService;
 
     @Override
-    public void commitBorrow(BorrowInfo borrowInfo, String token) {
-
-    }
-
-    @Override
     public BigDecimal getBorrowAmount(String token) {
         Long userId = JwtUtils.getUserId(token); // 解析token 获取用户id  并验证登录
         //查询用户的积分
@@ -53,36 +50,30 @@ public class BorrowInfoServiceImpl extends ServiceImpl<BorrowInfoMapper, BorrowI
                 .le(IntegralGrade::getIntegralStart, integral)
                 .ge(IntegralGrade::getIntegralEnd, integral));
 
-        return integralGrade==null?new BigDecimal("0"):integralGrade.getBorrowAmount();
+        return integralGrade == null ? new BigDecimal("0") : integralGrade.getBorrowAmount();
     }
 
-/*
+
     @Override
-    public void commitBorrow(BorrowInfo borrowInfo,String token) {
+    public void commitBorrow(BorrowInfo borrowInfo, String token) {
         Long userId = JwtUtils.getUserId(token);
 
-        */
-/*
-            判断用户账户是否正常：是否被锁定  是否已绑定汇付宝
-         *//*
-
+//            判断用户账户是否正常：是否被锁定  是否已绑定汇付宝
         UserInfo userInfo = userInfoService.getById(userId);
-        Assert.isTrue(userInfo.getStatus()!=1 , ResponseEnum.LOGIN_LOCKED_ERROR);
-        Assert.isTrue(userInfo.getBindStatus()!=1 , ResponseEnum.USER_NO_BIND_ERROR);
+        Assert.isTrue(userInfo.getStatus() != 1, ResponseEnum.LOGIN_LOCKED_ERROR);
+        Assert.isTrue(userInfo.getBindStatus() != 1, ResponseEnum.USER_NO_BIND_ERROR);
         //借款人信息是否已经审核通过
-        Assert.isTrue(userInfo.getBorrowAuthStatus()!=2 , ResponseEnum.USER_NO_AMOUNT_ERROR);
+        Assert.isTrue(userInfo.getBorrowAuthStatus() != 2, ResponseEnum.USER_NO_AMOUNT_ERROR);
 
-        */
-/*
-            判断用户 借款金额是否超过自己的额度
-         *//*
-
-        IntegralGrade integralGrade = integralGradeService.getOne(Wrappers.lambdaQuery(IntegralGrade.class)
-                .le(IntegralGrade::getIntegralStart, userInfo.getIntegral())
-                .ge(IntegralGrade::getIntegralEnd, userInfo.getIntegral()));
+//            判断用户 借款金额是否超过自己的额度
+        IntegralGrade integralGrade = integralGradeService.getOne(
+                Wrappers.lambdaQuery(IntegralGrade.class)
+                        .le(IntegralGrade::getIntegralStart, userInfo.getIntegral())
+                        .ge(IntegralGrade::getIntegralEnd, userInfo.getIntegral())
+        );
         //当前用户允许的最大借款额度
         BigDecimal allowBorrowAmount = integralGrade.getBorrowAmount();
-        Assert.isTrue(borrowInfo.getAmount().compareTo(allowBorrowAmount)==1,ResponseEnum.USER_AMOUNT_LESS_ERROR);
+        Assert.isTrue(borrowInfo.getAmount().compareTo(allowBorrowAmount) == 1, ResponseEnum.USER_AMOUNT_LESS_ERROR);
 
         borrowInfo.setUserId(userId);
         //将年利率转为小数存储(以后获取时有可能需要*100)
@@ -90,7 +81,7 @@ public class BorrowInfoServiceImpl extends ServiceImpl<BorrowInfoMapper, BorrowI
         borrowInfo.setStatus(1);
         this.save(borrowInfo);
     }
-
+/*
     @Override
     public void listBorrowInfoVOs(Page<BorrowInfoVO> page) {
         //查询borrowInfo的分页数据
